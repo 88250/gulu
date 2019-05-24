@@ -1,5 +1,5 @@
 <p align = "center">
-<h1>Gulu</h1>
+<img alt="Wide" src="https://user-images.githubusercontent.com/873584/58315007-4100f080-7e43-11e9-9b10-b64a6a4a5d2d.png">
 <br><br>
 Go 语言常用工具库，好轱辘大家造、大家用！
 <br><br>
