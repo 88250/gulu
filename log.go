@@ -22,6 +22,11 @@ import (
 	"strings"
 )
 
+type guluLog struct{}
+
+// Log utilities.
+var Log = guluLog{}
+
 // Logging level.
 const (
 	Off = iota
@@ -45,7 +50,7 @@ type Logger struct {
 }
 
 // NewLogger creates a logger.
-func NewLogger(out io.Writer) *Logger {
+func (*guluLog) NewLogger(out io.Writer) *Logger {
 	ret := &Logger{level: logLevel, logger: stdlog.New(out, "", stdlog.Ldate|stdlog.Ltime|stdlog.Lshortfile)}
 
 	loggers = append(loggers, ret)
@@ -54,7 +59,7 @@ func NewLogger(out io.Writer) *Logger {
 }
 
 // SetLevel sets the logging level of all loggers.
-func SetLevel(level string) {
+func (*guluLog) SetLevel(level string) {
 	logLevel = getLevel(level)
 
 	for _, l := range loggers {

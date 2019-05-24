@@ -44,7 +44,7 @@ Go 语言常用工具库，好轱辘大家造、大家用！
 
 
 <details>
-<summary>日志记录 <code>gulu.NewLogger()</code></summary>
+<summary>日志记录 <code>gulu.Log</code></summary>
 <br>
 
 * 提供可指定日志级别的日志记录器

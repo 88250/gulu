@@ -21,4 +21,4 @@ import "os"
 const Version = "v1.0.0"
 
 // Logger is the logger used in Gulu internally.
-var logger = NewLogger(os.Stdout)
+var logger = Log.NewLogger(os.Stdout)

@@ -20,11 +20,11 @@ import (
 )
 
 func TestSetLevel(t *testing.T) {
-	SetLevel("trace")
+	Log.SetLevel("trace")
 }
 
 func TestTrace(t *testing.T) {
-	logger.SetLevel("trace")
+	Log.SetLevel("trace")
 	logger.Trace("trace")
 	logger.SetLevel("off")
 	logger.Trace("trace")
