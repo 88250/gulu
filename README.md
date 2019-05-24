@@ -82,7 +82,7 @@ Go 语言常用工具库，好轱辘大家造、大家用！
 </details>
 
 <details>
-<summary>返回值相关 <code>gulu.NewResult()</code></summary>
+<summary>返回值相关 <code>gulu.Ret</code></summary>
 <br>
 
 * 提供普适返回值结构

@@ -21,6 +21,11 @@ import (
 	"net/http"
 )
 
+type guluRet struct{}
+
+// Ret utilities.
+var Ret = guluRet{}
+
 // Result.
 type Result struct {
 	Succ bool        `json:"succ"` // successful or not
@@ -30,7 +35,7 @@ type Result struct {
 }
 
 // NewResult creates a result with Succ=true, Code=0, Msg="", Data=nil.
-func NewResult() *Result {
+func (*guluRet) NewResult() *Result {
 	return &Result{
 		Succ: true,
 		Code: 0,
@@ -40,7 +45,7 @@ func NewResult() *Result {
 }
 
 // RetResult writes HTTP response with "Content-Type, application/json".
-func RetResult(w http.ResponseWriter, r *http.Request, res *Result) {
+func (*guluRet) RetResult(w http.ResponseWriter, r *http.Request, res *Result) {
 	w.Header().Set("Content-Type", "application/json")
 
 	data, err := json.Marshal(res)
@@ -54,7 +59,7 @@ func RetResult(w http.ResponseWriter, r *http.Request, res *Result) {
 }
 
 // RetGzResult writes HTTP response with "Content-Type, application/json" and "Content-Encoding, gzip".
-func RetGzResult(w http.ResponseWriter, r *http.Request, res *Result) {
+func (*guluRet) RetGzResult(w http.ResponseWriter, r *http.Request, res *Result) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Content-Encoding", "gzip")
 
@@ -75,7 +80,7 @@ func RetGzResult(w http.ResponseWriter, r *http.Request, res *Result) {
 }
 
 // RetJSON writes HTTP response with "Content-Type, application/json".
-func RetJSON(w http.ResponseWriter, r *http.Request, res map[string]interface{}) {
+func (*guluRet) RetJSON(w http.ResponseWriter, r *http.Request, res map[string]interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 
 	data, err := json.Marshal(res)
@@ -89,7 +94,7 @@ func RetJSON(w http.ResponseWriter, r *http.Request, res map[string]interface{})
 }
 
 // RetGzJSON writes HTTP response with "Content-Type, application/json" and "Content-Encoding, gzip".
-func RetGzJSON(w http.ResponseWriter, r *http.Request, res map[string]interface{}) {
+func (*guluRet) RetGzJSON(w http.ResponseWriter, r *http.Request, res map[string]interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Content-Encoding", "gzip")
 
