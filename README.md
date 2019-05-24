@@ -19,9 +19,6 @@ Go 语言常用工具库，好轱辘大家造、大家用！
 <a title="Author GitHub Followers" target="_blank" href="https://github.com/88250"><img src="https://img.shields.io/github/followers/88250.svg?label=Followers&style=social"></a>
 </p>
 
-## 简介
-
-
 ## 功能
 
 ### `gulu.File`
