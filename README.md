@@ -44,46 +44,74 @@ Go 语言常用工具库，好轱辘大家造、大家用！
 * 获取 $GOBIN 下指定可执行程序名的绝对路径
 </details>
 
-### `gulu.NewLogger()`
+
+<details>
+<summary>日志记录 <code>gulu.NewLogger()</code></summary>
+<br>
 
 * 提供可指定日志级别的日志记录器
+</details>
 
-### `gulu.Net`
+<details>
+<summary>日志记录 <code>gulu.Net</code></summary>
+<br>
 
 * 获取本机第一张网卡的地址
+</details>
 
-### `gulu.OS`
+<details>
+<summary>操作系统 <code>gulu.OS</code></summary>
+<br>
 
 * 判断是否是 Windows
 * 获取当前进程的工作目录
 * 获取用户 Home 目录路径
+</details>
 
-### `gulu.Recover()`
+<details>
+<summary>panic 处理 <code>gulu.Recover()</code></summary>
+<br>
 
 * 包装 recover() 提供更好的报错日志格式
+</details>
 
-### `gulu.Rand`
+<details>
+<summary>随机数 <code>gulu.Rand</code></summary>
+<br>
 
 * 随机字符串
 * 随机整数
+</details>
 
-### `gulu.NewResult()`
+<details>
+<summary>返回值相关 <code>gulu.NewResult()</code></summary>
+<br>
 
 * 提供普适返回值结构
+</details>
 
-### `gulu.Rune`
+<details>
+<summary>Rune 相关 <code>gulu.Rune</code></summary>
+<br>
 
 * 判断 rune 是否为数字或字母
 * 判断 rune 是否为字母
+</details>
 
-### `gulu.String`
+<details>
+<summary>字符串相关 <code>gulu.String</code></summary>
+<br>
 
 * 字符串是否包含在字符串数组中
 * 求最长公共子串
+</details>
 
-### `gulu.Zip`
+<details>
+<summary>Zip 压缩解压<code>gulu.Zip</code></summary>
+<br>
 
 * Zip 压缩和解压
+</details>
 
 ## 🗃 案例
 
