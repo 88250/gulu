@@ -19,7 +19,7 @@ Go 语言常用工具库，好轱辘大家造、大家用！
 <a title="Author GitHub Followers" target="_blank" href="https://github.com/88250"><img src="https://img.shields.io/github/followers/88250.svg?label=Followers&style=social"></a>
 </p>
 
-## 功能
+## ✨ 功能
 
 ### `gulu.File`
 
@@ -79,7 +79,7 @@ Go 语言常用工具库，好轱辘大家造、大家用！
 
 * Zip 压缩和解压
 
-## 案例
+## 🗃 案例
 
 * [Pipe](https://github.com/b3log/pipe)：一款小而美的博客平台，专为程序员设计
 * [Wide](https://github.com/b3log/wide)：一款基于 Web 的 Go 语言 IDE，随时随地玩 golang
@@ -87,7 +87,7 @@ Go 语言常用工具库，好轱辘大家造、大家用！
 
 如果你也在使用 Gulu，欢迎通过 PR 将你的项目添加到这里。
 
-## 贡献
+## 💝 贡献
 
 Gulu 肯定有一些不足之处：
 
@@ -99,15 +99,15 @@ Gulu 肯定有一些不足之处：
 
 欢迎大家和我们一起来完善该项目，无论是提交需求建议还是代码改进，我们都非常欢迎！
 
-## 社区
+## 🏘️ 社区
 
 * [讨论区](https://hacpai.com/tag/gulu)
 * [报告问题](https://github.com/b3log/gulu/issues/new/choose)
 
-## 授权
+## 📄 授权
 
 Gulu 使用 [Apache License, Version 2](https://www.apache.org/licenses/LICENSE-2.0) 开源协议。
 
-## 鸣谢
+## 🙏 鸣谢
 
 * [The Go Programming Language](https://golang.org)
