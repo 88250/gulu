@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"io"
 	stdlog "log"
+	"os"
 	"strings"
 )
 
@@ -35,6 +36,7 @@ const (
 	Info
 	Warn
 	Error
+	Fatal
 )
 
 // all loggers.
@@ -44,6 +46,7 @@ var loggers []*Logger
 var logLevel = Debug
 
 // Logger represents a simple logger with level.
+// The underlying logger is the standard Go logging "log".
 type Logger struct {
 	level  int
 	logger *stdlog.Logger
@@ -84,6 +87,8 @@ func getLevel(level string) int {
 		return Warn
 	case "error":
 		return Error
+	case "fatal":
+		return Fatal
 	default:
 		return Info
 	}
@@ -179,7 +184,7 @@ func (l *Logger) Warn(v ...interface{}) {
 	l.logger.Output(2, fmt.Sprint(v...))
 }
 
-// Warn prints warning level message with format.
+// Warnf prints warning level message with format.
 func (l *Logger) Warnf(format string, v ...interface{}) {
 	if Warn < l.level {
 		return
@@ -207,4 +212,26 @@ func (l *Logger) Errorf(format string, v ...interface{}) {
 
 	l.logger.SetPrefix("E ")
 	l.logger.Output(2, fmt.Sprintf(format, v...))
+}
+
+// Fatal prints fatal level message and exit process with code 1.
+func (l *Logger) Fatal(v ...interface{}) {
+	if Fatal < l.level {
+		return
+	}
+
+	l.logger.SetPrefix("F ")
+	l.logger.Output(2, fmt.Sprint(v...))
+	os.Exit(1)
+}
+
+// Fatalf prints fatal level message with format and exit process with code 1.
+func (l *Logger) Fatalf(format string, v ...interface{}) {
+	if Fatal < l.level {
+		return
+	}
+
+	l.logger.SetPrefix("F ")
+	l.logger.Output(2, fmt.Sprintf(format, v...))
+	os.Exit(1)
 }
