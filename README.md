@@ -6,8 +6,6 @@ Go 语言常用工具库，好轱辘大家造、大家用！
 <a title="Code Size" target="_blank" href="https://github.com/b3log/gulu"><img src="https://img.shields.io/github/languages/code-size/b3log/gulu.svg?style=flat-square"></a>
 <a title="Apache License" target="_blank" href="https://github.com/b3log/gulu/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-apache2-orange.svg?style=flat-square"></a>
 <br>
-<a title="Releases" target="_blank" href="https://github.com/b3log/gulu/releases"><img src="https://img.shields.io/github/release/b3log/gulu.svg?style=flat-square"></a>
-<a title="Release Date" target="_blank" href="https://github.com/b3log/gulu/releases"><img src="https://img.shields.io/github/release-date/b3log/gulu.svg?style=flat-square&color=99CCFF"></a>
 <a title="GitHub Commits" target="_blank" href="https://github.com/b3log/gulu/commits/master"><img src="https://img.shields.io/github/commit-activity/m/b3log/gulu.svg?style=flat-square"></a>
 <a title="Last Commit" target="_blank" href="https://github.com/b3log/gulu/commits/master"><img src="https://img.shields.io/github/last-commit/b3log/gulu.svg?style=flat-square&color=FF9900"></a>
 <a title="GitHub Pull Requests" target="_blank" href="https://github.com/b3log/gulu/pulls"><img src="https://img.shields.io/github/issues-pr-closed/b3log/gulu.svg?style=flat-square&color=FF9966"></a>
