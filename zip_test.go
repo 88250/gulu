@@ -136,7 +136,6 @@ func _TestEmptyDir(t *testing.T) {
 }
 
 func TestMain(m *testing.M) {
-	logger.Info(testdataDir)
 	retCode := m.Run()
 
 	// clean test data
