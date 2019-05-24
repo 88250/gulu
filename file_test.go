@@ -16,15 +16,18 @@
 package gulu
 
 import (
+	"os"
 	"path/filepath"
 	"strconv"
 	"testing"
 )
 
 func TestGetFileSize(t *testing.T) {
-	size := File.GetFileSize(".")
-
-	t.Log("size of file [.] is [" + strconv.FormatInt(size, 10) + "]")
+	filename := "./file.go"
+	size := File.GetFileSize(filename)
+	if 0 > size {
+		t.Error("file [" + filename + "] size is [" + strconv.FormatInt(size, 10) + "]")
+	}
 }
 
 func TestIsExist(t *testing.T) {
@@ -60,22 +63,25 @@ func TestIsDir(t *testing.T) {
 }
 
 func TestCopyDir(t *testing.T) {
-	dest := filepath.Join(testDir, "util")
+	testcopydir := "testcopydir"
+	os.Mkdir(testcopydir, 0644)
+	dest := filepath.Join(testdataDir, testcopydir)
+	defer os.Remove(dest)
 
-	err := File.CopyDir(".", dest)
+	err := File.CopyDir(testcopydir, dest)
 	if nil != err {
-		t.Error("Copy dir error: ", err)
+		t.Error("Copy dir failed: ", err)
 
 		return
 	}
 }
 
 func TestCopyFile(t *testing.T) {
-	dest := filepath.Join(testDir, "file.go")
-
+	dest := filepath.Join(testdataDir, "file.go")
+	defer os.Remove(dest)
 	err := File.CopyFile("./file.go", dest)
 	if nil != err {
-		t.Error("Copy file error: ", err)
+		t.Error("Copy file failed: ", err)
 
 		return
 	}
