@@ -29,31 +29,31 @@ const (
 	pathListSeparator = string(os.PathListSeparator) // OS-specific path list separator
 )
 
-type mygo struct{}
+type guluGo struct{}
 
 // Go utilities.
-var Go = mygo{}
+var Go = guluGo{}
 
-func (*mygo) GetCrossPlatforms() []string {
+func (*guluGo) GetCrossPlatforms() []string {
 	return []string{
 		"darwin_amd64", "linux_amd64", "windows_amd64",
 		"linux_arm", "darwin_386", "linux_386", "windows_386"}
 }
 
 // GetAPIPath gets the Go source code path $GOROOT/src.
-func (*mygo) GetAPIPath() string {
+func (*guluGo) GetAPIPath() string {
 	return filepath.FromSlash(path.Clean(runtime.GOROOT() + "/src"))
 }
 
 // IsAPI determines whether the specified path belongs to Go API.
-func (*mygo) IsAPI(path string) bool {
+func (*guluGo) IsAPI(path string) bool {
 	apiPath := Go.GetAPIPath()
 
 	return strings.HasPrefix(filepath.FromSlash(path), apiPath)
 }
 
 // GetGoFormats gets Go format tools. It may return ["gofmt", "goimports"].
-func (*mygo) GetGoFormats() []string {
+func (*guluGo) GetGoFormats() []string {
 	ret := []string{"gofmt"}
 
 	p := Go.GetExecutableInGOBIN("goimports")
@@ -69,7 +69,7 @@ func (*mygo) GetGoFormats() []string {
 // GetExecutableInGOBIN gets executable file under GOBIN path.
 //
 // The specified executable should not with extension, this function will append .exe if on Windows.
-func (*mygo) GetExecutableInGOBIN(executable string) string {
+func (*guluGo) GetExecutableInGOBIN(executable string) string {
 	if OS.IsWindows() {
 		executable += ".exe"
 	}

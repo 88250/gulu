@@ -15,17 +15,17 @@
 
 package gulu
 
-type myrune struct{}
+type guluRune struct{}
 
 // Rune utilities.
-var Rune = myrune{}
+var Rune = guluRune{}
 
 // IsNumOrLetter checks the specified rune is number or letter.
-func (*myrune) IsNumOrLetter(r rune) bool {
+func (*guluRune) IsNumOrLetter(r rune) bool {
 	return Rune.IsLetter(r) || ('0' <= r && '9' >= r)
 }
 
 // IsLetter checks the specified rune is letter.
-func (*myrune) IsLetter(r rune) bool {
+func (*guluRune) IsLetter(r rune) bool {
 	return 'a' <= r && 'z' >= r || 'A' <= r && 'Z' >= r
 }

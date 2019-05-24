@@ -22,13 +22,13 @@ import (
 	"strings"
 )
 
-type myfile struct{}
+type guluFile struct{}
 
 // File utilities.
-var File = myfile{}
+var File = guluFile{}
 
 // GetFileSize get the length in bytes of file of the specified path.
-func (*myfile) GetFileSize(path string) int64 {
+func (*guluFile) GetFileSize(path string) int64 {
 	fi, err := os.Stat(path)
 	if nil != err {
 		logger.Error(err)
@@ -40,14 +40,14 @@ func (*myfile) GetFileSize(path string) int64 {
 }
 
 // IsExist determines whether the file spcified by the given path is exists.
-func (*myfile) IsExist(path string) bool {
+func (*guluFile) IsExist(path string) bool {
 	_, err := os.Stat(path)
 
 	return err == nil || os.IsExist(err)
 }
 
 // IsBinary determines whether the specified content is a binary file content.
-func (*myfile) IsBinary(content string) bool {
+func (*guluFile) IsBinary(content string) bool {
 	for _, b := range content {
 		if 0 == b {
 			return true
@@ -58,7 +58,7 @@ func (*myfile) IsBinary(content string) bool {
 }
 
 // IsImg determines whether the specified extension is a image.
-func (*myfile) IsImg(extension string) bool {
+func (*guluFile) IsImg(extension string) bool {
 	ext := strings.ToLower(extension)
 
 	switch ext {
@@ -70,7 +70,7 @@ func (*myfile) IsImg(extension string) bool {
 }
 
 // IsDir determines whether the specified path is a directory.
-func (*myfile) IsDir(path string) bool {
+func (*guluFile) IsDir(path string) bool {
 	fio, err := os.Lstat(path)
 	if os.IsNotExist(err) {
 		return false
@@ -86,7 +86,7 @@ func (*myfile) IsDir(path string) bool {
 }
 
 // CopyFile copies the source file to the dest file.
-func (*myfile) CopyFile(source string, dest string) (err error) {
+func (*guluFile) CopyFile(source string, dest string) (err error) {
 	sourcefile, err := os.Open(source)
 	if err != nil {
 		return err
@@ -113,7 +113,7 @@ func (*myfile) CopyFile(source string, dest string) (err error) {
 }
 
 // CopyDir copies the source directory to the dest directory.
-func (*myfile) CopyDir(source string, dest string) (err error) {
+func (*guluFile) CopyDir(source string, dest string) (err error) {
 	sourceinfo, err := os.Stat(source)
 	if err != nil {
 		return err

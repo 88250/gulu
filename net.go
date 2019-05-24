@@ -20,13 +20,13 @@ import (
 	"net"
 )
 
-type mynet struct{}
+type guluNet struct{}
 
 // Network utilities.
-var Net = mynet{}
+var Net = guluNet{}
 
 // LocalIP gets the first NIC's IP address.
-func (*mynet) LocalIP() (string, error) {
+func (*guluNet) LocalIP() (string, error) {
 	addrs, err := net.InterfaceAddrs()
 
 	if nil != err {
