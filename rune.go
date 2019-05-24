@@ -25,7 +25,7 @@ func (*myrune) IsNumOrLetter(r rune) bool {
 	return Rune.IsLetter(r) || ('0' <= r && '9' >= r)
 }
 
-// IsLetter checks the specified run is letter.
+// IsLetter checks the specified rune is letter.
 func (*myrune) IsLetter(r rune) bool {
 	return 'a' <= r && 'z' >= r || 'A' <= r && 'Z' >= r
 }
