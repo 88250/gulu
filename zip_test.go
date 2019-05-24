@@ -21,8 +21,8 @@ import (
 	"testing"
 )
 
-var testDir = "testdata"
-var packageName = filepath.Join(testDir, "test_zip")
+var testdataDir = "testdata"
+var packageName = filepath.Join(testdataDir, "test_zip")
 
 func TestCreate(t *testing.T) {
 	zipFile, err := Zip.Create(packageName + ".zip")
@@ -136,12 +136,12 @@ func _TestEmptyDir(t *testing.T) {
 }
 
 func TestMain(m *testing.M) {
-	logger.Info(testDir)
-
+	logger.Info(testdataDir)
 	retCode := m.Run()
 
 	// clean test data
-	//os.RemoveAll(testDir + "/test_zip.zip")
+	os.RemoveAll(packageName + ".zip")
+	os.RemoveAll(packageName)
 
 	os.Exit(retCode)
 }
