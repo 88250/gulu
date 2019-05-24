@@ -25,24 +25,45 @@ type guluRand struct{}
 // Random utilities.
 var Rand = guluRand{}
 
-// String returns a random string ['a', 'z'] in the specified length
-func (*guluRand) String(length int) string {
-	bytes := make([]byte, length)
-
-	for i := 0; i < length; i++ {
-		bytes[i] = byte(Rand.Int('a', 'z'))
-
-		time.Sleep(100 * time.Nanosecond)
+// Ints returns a random integer array with the specified from, to and size.
+func (*guluRand) Ints(from, to, size int) []int {
+	if to-from < size {
+		size = to - from
 	}
 
-	return string(bytes)
+	var slice []int
+	for i := from; i < to; i++ {
+		slice = append(slice, i)
+	}
+
+	var ret []int
+	for i := 0; i < size; i++ {
+		idx := rand.Intn(len(slice))
+		ret = append(ret, slice[idx])
+		slice = append(slice[:idx], slice[idx+1:]...)
+	}
+
+	return ret
+}
+
+// String returns a random string ['a', 'z'] in the specified length
+func (*guluRand) String(length int) string {
+	rand.Seed(time.Now().UTC().UnixNano())
+	time.Sleep(time.Nanosecond)
+
+	letter := []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+	b := make([]rune, length)
+	for i := range b {
+		b[i] = letter[rand.Intn(len(letter))]
+	}
+
+	return string(b)
 }
 
 // Int returns a random integer in range [min, max].
 func (*guluRand) Int(min int, max int) int {
 	rand.Seed(time.Now().UnixNano())
-
-	time.Sleep(100 * time.Nanosecond)
+	time.Sleep(time.Nanosecond)
 
 	return min + rand.Intn(max-min)
 }
