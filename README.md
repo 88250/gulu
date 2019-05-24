@@ -1,8 +1,26 @@
-# gulu
+<p align = "center">
+<h1>Gulu</h1>
+<br><br>
+Go 语言常用工具库，好轱辘大家造、大家用！
+<br><br>
+<a title="Code Size" target="_blank" href="https://github.com/b3log/gulu"><img src="https://img.shields.io/github/languages/code-size/b3log/gulu.svg?style=flat-square"></a>
+<a title="Apache License" target="_blank" href="https://github.com/b3log/gulu/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-apache2-orange.svg?style=flat-square"></a>
+<br>
+<a title="Releases" target="_blank" href="https://github.com/b3log/gulu/releases"><img src="https://img.shields.io/github/release/b3log/gulu.svg?style=flat-square"></a>
+<a title="Release Date" target="_blank" href="https://github.com/b3log/gulu/releases"><img src="https://img.shields.io/github/release-date/b3log/gulu.svg?style=flat-square&color=99CCFF"></a>
+<a title="GitHub Commits" target="_blank" href="https://github.com/b3log/gulu/commits/master"><img src="https://img.shields.io/github/commit-activity/m/b3log/gulu.svg?style=flat-square"></a>
+<a title="Last Commit" target="_blank" href="https://github.com/b3log/gulu/commits/master"><img src="https://img.shields.io/github/last-commit/b3log/gulu.svg?style=flat-square&color=FF9900"></a>
+<a title="GitHub Pull Requests" target="_blank" href="https://github.com/b3log/gulu/pulls"><img src="https://img.shields.io/github/issues-pr-closed/b3log/gulu.svg?style=flat-square&color=FF9966"></a>
+<a title="Hits" target="_blank" href="https://github.com/b3log/hits"><img src="https://hits.b3log.org/b3log/gulu.svg"></a>
+<br><br>
+<a title="GitHub Watchers" target="_blank" href="https://github.com/b3log/gulu/watchers"><img src="https://img.shields.io/github/watchers/b3log/gulu.svg?label=Watchers&style=social"></a>&nbsp;&nbsp;
+<a title="GitHub Stars" target="_blank" href="https://github.com/b3log/gulu/stargazers"><img src="https://img.shields.io/github/stars/b3log/gulu.svg?label=Stars&style=social"></a>&nbsp;&nbsp;
+<a title="GitHub Forks" target="_blank" href="https://github.com/b3log/gulu/network/members"><img src="https://img.shields.io/github/forks/b3log/gulu.svg?label=Forks&style=social"></a>&nbsp;&nbsp;
+<a title="Author GitHub Followers" target="_blank" href="https://github.com/88250"><img src="https://img.shields.io/github/followers/88250.svg?label=Followers&style=social"></a>
+</p>
 
 ## 简介
 
-Go 语言常用工具库，好轱辘大家造、大家用。
 
 ## 功能
 
