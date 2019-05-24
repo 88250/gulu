@@ -51,7 +51,7 @@ Go 语言常用工具库，好轱辘大家造、大家用！
 </details>
 
 <details>
-<summary>日志记录 <code>gulu.Net</code></summary>
+<summary>网络相关 <code>gulu.Net</code></summary>
 <br>
 
 * 获取本机第一张网卡的地址
