@@ -21,7 +21,8 @@ Go 语言常用工具库，好轱辘大家造、大家用！
 
 ## ✨ 功能
 
-### `gulu.File`
+<details>
+<summary><h3><code>gulu.File</code></h3></summary>
 
 * 获取文件大小
 * 判断路径是否存在
@@ -30,6 +31,7 @@ Go 语言常用工具库，好轱辘大家造、大家用！
 * 判断文件是否是目录
 * 复制文件
 * 复制目录
+</details>
 
 ### `gulu.Go`
 
