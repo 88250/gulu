@@ -22,7 +22,8 @@ Go 语言常用工具库，好轱辘大家造、大家用！
 ## ✨ 功能
 
 <details>
-<summary><h3><code>gulu.File</code></h3></summary>
+<summary>文件操作 <code>gulu.File</code></summary>
+<br>
 
 * 获取文件大小
 * 判断路径是否存在
@@ -33,12 +34,15 @@ Go 语言常用工具库，好轱辘大家造、大家用！
 * 复制目录
 </details>
 
-### `gulu.Go`
+<details>
+<summary>Go 语言 <code>gulu.Go</code></summary>
+<br>
 
 * 获取 Go API 源码目录路径
 * 判断指定路径是否在 Go API 源码目录下
 * 获取格式化工具名 ["gofmt", "goimports"]
 * 获取 $GOBIN 下指定可执行程序名的绝对路径
+</details>
 
 ### `gulu.NewLogger()`
 
