@@ -18,7 +18,7 @@ package gulu
 import "testing"
 
 func TestRecover(t *testing.T) {
-	defer Recover()
+	defer Panic.Recover()
 
 	panic("test panic")
 }

@@ -67,7 +67,7 @@ Go 语言常用工具库，好轱辘大家造、大家用！
 </details>
 
 <details>
-<summary>panic 处理 <code>gulu.Recover()</code></summary>
+<summary>panic 处理 <code>gulu.Panic</code></summary>
 <br>
 
 * 包装 recover() 提供更好的报错日志格式

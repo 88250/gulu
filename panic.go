@@ -22,6 +22,11 @@ import (
 	"runtime"
 )
 
+type guluPanic struct{}
+
+// Panic utilities.
+var Panic = guluPanic{}
+
 var (
 	dunno     = []byte("???")
 	centerDot = []byte("·")
@@ -30,7 +35,7 @@ var (
 )
 
 // Recover recovers a panic.
-func Recover() {
+func (*guluPanic) Recover() {
 	if re := recover(); nil != re {
 		stack := stack()
 		logger.Errorf("PANIC RECOVERED: %v\n\t%s\n", re, stack)
