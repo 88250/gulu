@@ -1,7 +1,7 @@
 <p align = "center">
 <img alt="Wide" src="https://user-images.githubusercontent.com/873584/58315007-4100f080-7e43-11e9-9b10-b64a6a4a5d2d.png">
 <br><br>
-Go 语言常用工具库，好轱辘大家造、大家用！
+Go 语言常用工具库，这个轱辘还算圆！
 <br><br>
 <a title="Coverage Status" target="_blank" href="https://coveralls.io/repos/github/b3log/gulu/badge.svg?branch=master"><img src="https://img.shields.io/coveralls/github/b3log/gulu.svg?style=flat-square&color=CC9933"></a>
 <a title="Code Size" target="_blank" href="https://github.com/b3log/gulu"><img src="https://img.shields.io/github/languages/code-size/b3log/gulu.svg?style=flat-square"></a>
