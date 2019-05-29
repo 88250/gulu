@@ -48,14 +48,24 @@ type (
 )
 
 var (
-	File  GuluFile  // File utilities
-	Go    GuluGo    // Go utilities
-	Net   GuluNet   // Network utilities
-	OS    GuluOS    // OS utilities
-	Panic GuluPanic // Panic utilities
-	Rand  GuluRand  // Random utilities
-	Ret   GuluRet   // Ret utilities
-	Rune  GuluRune  // Rune utilities
-	Str   GuluStr   // String utilities
-	Zip   GuluZip   // Zip utilities
+	// File utilities
+	File GuluFile
+	// Go utilities
+	Go GuluGo
+	// Network utilities
+	Net GuluNet
+	// OS utilities
+	OS GuluOS
+	// Panic utilities
+	Panic GuluPanic
+	// Random utilities
+	Rand GuluRand
+	// Ret utilities
+	Ret GuluRet
+	// Rune utilities
+	Rune GuluRune
+	// String utilities
+	Str GuluStr
+	// Zip utilities
+	Zip GuluZip
 )

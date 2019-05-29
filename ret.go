@@ -21,7 +21,7 @@ import (
 	"net/http"
 )
 
-// Result.
+// Result represents a common-used result struct.
 type Result struct {
 	Code int         `json:"code"` // return code
 	Msg  string      `json:"msg"`  // message
