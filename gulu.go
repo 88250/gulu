@@ -52,19 +52,19 @@ var (
 	File GuluFile
 	// Go utilities
 	Go GuluGo
-	// Network utilities
+	// Net utilities
 	Net GuluNet
 	// OS utilities
 	OS GuluOS
 	// Panic utilities
 	Panic GuluPanic
-	// Random utilities
+	// Rand utilities
 	Rand GuluRand
 	// Ret utilities
 	Ret GuluRet
 	// Rune utilities
 	Rune GuluRune
-	// String utilities
+	// Str utilities
 	Str GuluStr
 	// Zip utilities
 	Zip GuluZip
