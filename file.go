@@ -22,13 +22,8 @@ import (
 	"strings"
 )
 
-type guluFile struct{}
-
-// File utilities.
-var File = guluFile{}
-
 // GetFileSize get the length in bytes of file of the specified path.
-func (*guluFile) GetFileSize(path string) int64 {
+func (*GuluFile) GetFileSize(path string) int64 {
 	fi, err := os.Stat(path)
 	if nil != err {
 		logger.Error(err)
@@ -40,14 +35,14 @@ func (*guluFile) GetFileSize(path string) int64 {
 }
 
 // IsExist determines whether the file spcified by the given path is exists.
-func (*guluFile) IsExist(path string) bool {
+func (*GuluFile) IsExist(path string) bool {
 	_, err := os.Stat(path)
 
 	return err == nil || os.IsExist(err)
 }
 
 // IsBinary determines whether the specified content is a binary file content.
-func (*guluFile) IsBinary(content string) bool {
+func (*GuluFile) IsBinary(content string) bool {
 	for _, b := range content {
 		if 0 == b {
 			return true
@@ -58,7 +53,7 @@ func (*guluFile) IsBinary(content string) bool {
 }
 
 // IsImg determines whether the specified extension is a image.
-func (*guluFile) IsImg(extension string) bool {
+func (*GuluFile) IsImg(extension string) bool {
 	ext := strings.ToLower(extension)
 
 	switch ext {
@@ -70,7 +65,7 @@ func (*guluFile) IsImg(extension string) bool {
 }
 
 // IsDir determines whether the specified path is a directory.
-func (*guluFile) IsDir(path string) bool {
+func (*GuluFile) IsDir(path string) bool {
 	fio, err := os.Lstat(path)
 	if os.IsNotExist(err) {
 		return false
@@ -86,7 +81,7 @@ func (*guluFile) IsDir(path string) bool {
 }
 
 // CopyFile copies the source file to the dest file.
-func (*guluFile) CopyFile(source string, dest string) (err error) {
+func (*GuluFile) CopyFile(source string, dest string) (err error) {
 	sourcefile, err := os.Open(source)
 	if err != nil {
 		return err
@@ -113,7 +108,7 @@ func (*guluFile) CopyFile(source string, dest string) (err error) {
 }
 
 // CopyDir copies the source directory to the dest directory.
-func (*guluFile) CopyDir(source string, dest string) (err error) {
+func (*GuluFile) CopyDir(source string, dest string) (err error) {
 	sourceinfo, err := os.Stat(source)
 	if err != nil {
 		return err

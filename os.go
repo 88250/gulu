@@ -26,18 +26,13 @@ import (
 	"strings"
 )
 
-type guluOS struct{}
-
-// OS utilities.
-var OS = guluOS{}
-
 // IsWindows determines whether current OS is Windows.
-func (*guluOS) IsWindows() bool {
+func (*GuluOS) IsWindows() bool {
 	return "windows" == runtime.GOOS
 }
 
 // Pwd gets the path of current working directory.
-func (*guluOS) Pwd() string {
+func (*GuluOS) Pwd() string {
 	file, _ := exec.LookPath(os.Args[0])
 	pwd, _ := filepath.Abs(file)
 
@@ -48,7 +43,7 @@ func (*guluOS) Pwd() string {
 //
 // This uses an OS-specific method for discovering the home directory.
 // An error is returned if a home directory cannot be detected.
-func (*guluOS) Home() (string, error) {
+func (*GuluOS) Home() (string, error) {
 	user, err := user.Current()
 	if nil == err {
 		return user.HomeDir, nil

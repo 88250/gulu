@@ -20,13 +20,8 @@ import (
 	"time"
 )
 
-type guluRand struct{}
-
-// Random utilities.
-var Rand = guluRand{}
-
 // Ints returns a random integer array with the specified from, to and size.
-func (*guluRand) Ints(from, to, size int) []int {
+func (*GuluRand) Ints(from, to, size int) []int {
 	if to-from < size {
 		size = to - from
 	}
@@ -47,7 +42,7 @@ func (*guluRand) Ints(from, to, size int) []int {
 }
 
 // String returns a random string ['a', 'z'] in the specified length
-func (*guluRand) String(length int) string {
+func (*GuluRand) String(length int) string {
 	rand.Seed(time.Now().UTC().UnixNano())
 	time.Sleep(time.Nanosecond)
 
@@ -61,7 +56,7 @@ func (*guluRand) String(length int) string {
 }
 
 // Int returns a random integer in range [min, max].
-func (*guluRand) Int(min int, max int) int {
+func (*GuluRand) Int(min int, max int) int {
 	rand.Seed(time.Now().UnixNano())
 	time.Sleep(time.Nanosecond)
 

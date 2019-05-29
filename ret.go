@@ -21,11 +21,6 @@ import (
 	"net/http"
 )
 
-type guluRet struct{}
-
-// Ret utilities.
-var Ret = guluRet{}
-
 // Result.
 type Result struct {
 	Code int         `json:"code"` // return code
@@ -34,7 +29,7 @@ type Result struct {
 }
 
 // NewResult creates a result with Code=0, Msg="", Data=nil.
-func (*guluRet) NewResult() *Result {
+func (*GuluRet) NewResult() *Result {
 	return &Result{
 		Code: 0,
 		Msg:  "",
@@ -43,7 +38,7 @@ func (*guluRet) NewResult() *Result {
 }
 
 // RetResult writes HTTP response with "Content-Type, application/json".
-func (*guluRet) RetResult(w http.ResponseWriter, r *http.Request, res *Result) {
+func (*GuluRet) RetResult(w http.ResponseWriter, r *http.Request, res *Result) {
 	w.Header().Set("Content-Type", "application/json")
 
 	data, err := json.Marshal(res)
@@ -57,7 +52,7 @@ func (*guluRet) RetResult(w http.ResponseWriter, r *http.Request, res *Result) {
 }
 
 // RetGzResult writes HTTP response with "Content-Type, application/json" and "Content-Encoding, gzip".
-func (*guluRet) RetGzResult(w http.ResponseWriter, r *http.Request, res *Result) {
+func (*GuluRet) RetGzResult(w http.ResponseWriter, r *http.Request, res *Result) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Content-Encoding", "gzip")
 
@@ -78,7 +73,7 @@ func (*guluRet) RetGzResult(w http.ResponseWriter, r *http.Request, res *Result)
 }
 
 // RetJSON writes HTTP response with "Content-Type, application/json".
-func (*guluRet) RetJSON(w http.ResponseWriter, r *http.Request, res map[string]interface{}) {
+func (*GuluRet) RetJSON(w http.ResponseWriter, r *http.Request, res map[string]interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 
 	data, err := json.Marshal(res)
@@ -92,7 +87,7 @@ func (*guluRet) RetJSON(w http.ResponseWriter, r *http.Request, res map[string]i
 }
 
 // RetGzJSON writes HTTP response with "Content-Type, application/json" and "Content-Encoding, gzip".
-func (*guluRet) RetGzJSON(w http.ResponseWriter, r *http.Request, res map[string]interface{}) {
+func (*GuluRet) RetGzJSON(w http.ResponseWriter, r *http.Request, res map[string]interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Content-Encoding", "gzip")
 

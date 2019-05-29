@@ -28,11 +28,6 @@ import (
 	"golang.org/x/text/transform"
 )
 
-type guluZip struct{}
-
-// Zip utilities.
-var Zip = guluZip{}
-
 // ZipFile represents a zip file.
 type ZipFile struct {
 	zipFile *os.File
@@ -40,7 +35,7 @@ type ZipFile struct {
 }
 
 // Create creates a zip file with the specified filename.
-func (*guluZip) Create(filename string) (*ZipFile, error) {
+func (*GuluZip) Create(filename string) (*ZipFile, error) {
 	file, err := os.Create(filename)
 	if nil != err {
 		return nil, err
@@ -211,7 +206,7 @@ func cloneZipItem(f *zip.File, dest string) error {
 }
 
 // Unzip extracts a zip file specified by the zipFilePath to the destination.
-func (*guluZip) Unzip(zipFilePath, destination string) error {
+func (*GuluZip) Unzip(zipFilePath, destination string) error {
 	r, err := zip.OpenReader(zipFilePath)
 
 	if nil != err {
