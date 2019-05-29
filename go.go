@@ -34,12 +34,6 @@ type guluGo struct{}
 // Go utilities.
 var Go = guluGo{}
 
-func (*guluGo) GetCrossPlatforms() []string {
-	return []string{
-		"darwin_amd64", "linux_amd64", "windows_amd64",
-		"linux_arm", "darwin_386", "linux_386", "windows_386"}
-}
-
 // GetAPIPath gets the Go source code path $GOROOT/src.
 func (*guluGo) GetAPIPath() string {
 	return filepath.FromSlash(path.Clean(runtime.GOROOT() + "/src"))

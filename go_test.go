@@ -20,14 +20,6 @@ import (
 	"testing"
 )
 
-func TestGetCrossPlatforms(t *testing.T) {
-	crossPlatforms := Go.GetCrossPlatforms()
-
-	if len(crossPlatforms) < 1 {
-		t.Error("should have one platform at least")
-	}
-}
-
 func TestGetAPIPath(t *testing.T) {
 	apiPath := Go.GetAPIPath()
 
