@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Golang common utilities for everyone.
+// Package gulu implements some common utilities.
 package gulu
 
 import "os"
@@ -25,15 +25,16 @@ const Version = "v1.0.0"
 var logger = Log.NewLogger(os.Stdout)
 
 type (
-	GuluFile  byte
-	GuluGo    byte
-	GuluNet   byte
-	GuluOS    byte
-	GuluPanic byte
-	GuluRand  byte
-	GuluRet   byte
-	GuluRune  byte
-	GuluZip   byte
+	GuluFile  byte // GuluFile is the receiver of file utilities
+	GuluGo    byte // GuluGo is the receiver of Go utilities
+	GuluNet   byte // GuluNet is the receiver of network utilities
+	GuluOS    byte // GuluOS is the receiver of OS utilities
+	GuluPanic byte // GuluPanic is the receiver of panic utilities
+	GuluRand  byte // GuluRand is the receiver of random utilities
+	GuluRet   byte // GuluRet is the receiver of result utilities
+	GuluRune  byte // GuluRune is the receiver of rune utilities
+	GuluStr   byte // GuluStr is the receiver of string utilities
+	GuluZip   byte // GuluZip is the receiver of zip utilities
 )
 
 var (
@@ -44,6 +45,7 @@ var (
 	Panic GuluPanic // Panic utilities
 	Rand  GuluRand  // Random utilities
 	Ret   GuluRet   // Ret utilities
-	Rune  GuluRune  // Rune utilities.
+	Rune  GuluRune  // Rune utilities
+	Str   GuluStr  // String utilities
 	Zip   GuluZip   // Zip utilities
 )

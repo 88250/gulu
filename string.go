@@ -15,13 +15,8 @@
 
 package gulu
 
-type guluStr struct{}
-
-// String utilities.
-var Str = guluStr{}
-
 // Contains determines whether the str is in the strs.
-func (*guluStr) Contains(str string, strs []string) bool {
+func (*GuluStr) Contains(str string, strs []string) bool {
 	for _, v := range strs {
 		if v == str {
 			return true
@@ -34,7 +29,7 @@ func (*guluStr) Contains(str string, strs []string) bool {
 // LCS gets the longest common substring of s1 and s2.
 //
 // Refers to http://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Longest_common_substring.
-func (*guluStr) LCS(s1 string, s2 string) string {
+func (*GuluStr) LCS(s1 string, s2 string) string {
 	var m = make([][]int, 1+len(s1))
 
 	for i := 0; i < len(m); i++ {
