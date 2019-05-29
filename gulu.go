@@ -25,16 +25,26 @@ const Version = "v1.0.0"
 var logger = Log.NewLogger(os.Stdout)
 
 type (
-	GuluFile  byte // GuluFile is the receiver of file utilities
-	GuluGo    byte // GuluGo is the receiver of Go utilities
-	GuluNet   byte // GuluNet is the receiver of network utilities
-	GuluOS    byte // GuluOS is the receiver of OS utilities
-	GuluPanic byte // GuluPanic is the receiver of panic utilities
-	GuluRand  byte // GuluRand is the receiver of random utilities
-	GuluRet   byte // GuluRet is the receiver of result utilities
-	GuluRune  byte // GuluRune is the receiver of rune utilities
-	GuluStr   byte // GuluStr is the receiver of string utilities
-	GuluZip   byte // GuluZip is the receiver of zip utilities
+	// GuluFile is the receiver of file utilities
+	GuluFile byte
+	// GuluGo is the receiver of Go utilities
+	GuluGo byte
+	// GuluNet is the receiver of network utilities
+	GuluNet byte
+	// GuluOS is the receiver of OS utilities
+	GuluOS byte
+	// GuluPanic is the receiver of panic utilities
+	GuluPanic byte
+	// GuluRand is the receiver of random utilities
+	GuluRand byte
+	// GuluRet is the receiver of result utilities
+	GuluRet byte
+	// GuluRune is the receiver of rune utilities
+	GuluRune byte
+	// GuluStr is the receiver of string utilities
+	GuluStr byte
+	// GuluZip is the receiver of zip utilities
+	GuluZip byte
 )
 
 var (
