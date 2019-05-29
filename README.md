@@ -101,7 +101,7 @@ Go 语言常用工具库，这个轱辘还算圆！
 </details>
 
 <details>
-<summary>字符串相关 <code>gulu.String</code></summary>
+<summary>字符串相关 <code>gulu.Str</code></summary>
 <br>
 
 * 字符串是否包含在字符串数组中
