@@ -46,6 +46,6 @@ var (
 	Rand  GuluRand  // Random utilities
 	Ret   GuluRet   // Ret utilities
 	Rune  GuluRune  // Rune utilities
-	Str   GuluStr  // String utilities
+	Str   GuluStr   // String utilities
 	Zip   GuluZip   // Zip utilities
 )
