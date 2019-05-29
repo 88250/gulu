@@ -17,10 +17,9 @@ package gulu
 
 import "testing"
 
-func TestNewResult(t*testing.T){
+func TestNewResult(t *testing.T) {
 	result := Ret.NewResult()
 	if 0 != result.Code {
 		t.Fail()
 	}
 }
-

@@ -17,7 +17,7 @@ package gulu
 
 import "testing"
 
-func TestIsNumOrLetter(t*testing.T){
+func TestIsNumOrLetter(t *testing.T) {
 	if !Rune.IsNumOrLetter(rune('0')) {
 		t.Fail()
 	}
@@ -26,7 +26,7 @@ func TestIsNumOrLetter(t*testing.T){
 	}
 }
 
-func TestIsLetter(t*testing.T){
+func TestIsLetter(t *testing.T) {
 	if !Rune.IsLetter(rune('a')) {
 		t.Fail()
 	}

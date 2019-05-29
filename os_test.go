@@ -42,9 +42,9 @@ func TestHome(t *testing.T) {
 	home, err := OS.Home()
 	if nil != err {
 		t.Error("Can not get user home")
-		
+
 		return
 	}
-	
+
 	t.Log(home)
 }

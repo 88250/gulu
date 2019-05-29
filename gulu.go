@@ -25,15 +25,15 @@ const Version = "v1.0.0"
 var logger = Log.NewLogger(os.Stdout)
 
 type (
-	GuluFile byte
-	GuluGo byte
-	GuluNet byte
-	GuluOS byte
+	GuluFile  byte
+	GuluGo    byte
+	GuluNet   byte
+	GuluOS    byte
 	GuluPanic byte
-	GuluRand byte
-	GuluRet byte
-	GuluRune byte
-	GuluZip byte
+	GuluRand  byte
+	GuluRet   byte
+	GuluRune  byte
+	GuluZip   byte
 )
 
 var (

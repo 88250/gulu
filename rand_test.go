@@ -17,7 +17,7 @@ package gulu
 
 import "testing"
 
-func TestInts(t*testing.T){
+func TestInts(t *testing.T) {
 	ints := Rand.Ints(10, 19, 20)
 	if 9 != len(ints) {
 		t.Fail()

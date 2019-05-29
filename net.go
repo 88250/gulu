@@ -20,7 +20,6 @@ import (
 	"net"
 )
 
-
 // LocalIP gets the first NIC's IP address.
 func (*GuluNet) LocalIP() (string, error) {
 	addrs, err := net.InterfaceAddrs()
