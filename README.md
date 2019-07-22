@@ -119,6 +119,7 @@ Go 语言常用工具库，这个轱辘还算圆！
 
 * [Pipe](https://github.com/b3log/pipe)：一款小而美的博客平台，专为程序员设计
 * [Wide](https://github.com/b3log/wide)：一款基于 Web 的 Go 语言 IDE，随时随地玩 golang
+* [BND](https://github.com/b3log/baidu-netdisk-downloaderx)：一款图形界面的百度网盘不限速下载器，支持 Windows、Linux 和 Mac
 * [协慌网](https://routinepanic.com)：专注编程问答汉化
 
 如果你也在使用 Gulu，欢迎通过 PR 将你的项目添加到这里。
@@ -127,10 +128,10 @@ Go 语言常用工具库，这个轱辘还算圆！
 
 Gulu 肯定有一些不足之处：
 
-* 实现存在缺陷
 * 代码不够优美
 * 文档不够清晰
 * 功能不够完善
+* 可能存在缺陷
 * ……
 
 希望大家能和我们一起来完善该项目，无论是提交需求建议还是代码改进，我们都非常欢迎！
