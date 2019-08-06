@@ -17,6 +17,7 @@ package gulu
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"runtime"
@@ -30,10 +31,11 @@ var (
 )
 
 // Recover recovers a panic.
-func (*GuluPanic) Recover() {
-	if re := recover(); nil != re {
+func (*GuluPanic) Recover(err *error) {
+	if e := recover(); nil != e {
 		stack := stack()
-		logger.Errorf("PANIC RECOVERED: %v\n\t%s\n", re, stack)
+		msg := fmt.Sprintf("PANIC RECOVERED: %v\n\t%s\n", e, stack)
+		*err = errors.New(msg)
 	}
 }
 
