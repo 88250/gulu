@@ -15,6 +15,20 @@
 
 package gulu
 
+import "unsafe"
+
+// FromBytes converts the specified byte array to a string.
+func (*GuluStr) FromBytes(bytes []byte) string {
+	return *(*string)(unsafe.Pointer(&bytes))
+}
+
+// Bytes converts the specified str to a byte array.
+func (*GuluStr) ToBytes(str string) []byte {
+	x := (*[2]uintptr)(unsafe.Pointer(&str))
+	h := [3]uintptr{x[0], x[1], x[1]}
+	return *(*[]byte)(unsafe.Pointer(&h))
+}
+
 // Contains determines whether the str is in the strs.
 func (*GuluStr) Contains(str string, strs []string) bool {
 	for _, v := range strs {
