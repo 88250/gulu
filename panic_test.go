@@ -15,10 +15,21 @@
 
 package gulu
 
-import "testing"
+import (
+	"sync"
+	"testing"
+)
 
 func TestRecover(t *testing.T) {
-	defer Panic.Recover()
+	var err error
 
-	panic("test panic")
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		defer Panic.Recover(&err)
+		panic("test panic")
+	}()
+	wg.Wait()
+	t.Log(err)
 }
