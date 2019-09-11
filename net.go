@@ -39,7 +39,7 @@ func (*GuluNet) LocalIP() (string, error) {
 	return "", errors.New("can't get local IP")
 }
 
-// LocalMac gets the first NIC's mac address.
+// LocalMac gets the first NIC's MAC address.
 func (*GuluNet) LocalMac() (string, error) {
 	interfaces, err := net.Interfaces()
 	if err != nil {
