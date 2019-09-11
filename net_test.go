@@ -26,3 +26,13 @@ func TestLocalIP(t *testing.T) {
 
 	t.Log(ip)
 }
+
+func TestLocalMac(t *testing.T) {
+	mac, err := Net.LocalMac()
+
+	if nil != err {
+		t.Error(err)
+	}
+
+	t.Log(mac)
+}

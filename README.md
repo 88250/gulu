@@ -58,7 +58,8 @@ Go 语言常用工具库，这个轱辘还算圆！
 <summary>网络相关 <code>gulu.Net</code></summary>
 <br>
 
-* 获取本机第一张网卡的地址
+* 获取本机第一张网卡的ip地址
+* 获取本机第一张网卡的mac地址
 </details>
 
 <details>
