@@ -11,7 +11,7 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-# https://github.com/b3log/header
+# https://github.com/88250/header
 /header
 /header.exe
 
