@@ -121,7 +121,7 @@ func (l *Logger) Trace(v ...interface{}) {
 	}
 
 	l.logger.SetPrefix("T ")
-	l.logger.Output(2, fmt.Sprint(v...))
+	l.logger.Output(2, fmt.Sprintln(v...))
 }
 
 // Tracef prints trace level message with format.
@@ -141,7 +141,7 @@ func (l *Logger) Debug(v ...interface{}) {
 	}
 
 	l.logger.SetPrefix("D ")
-	l.logger.Output(2, fmt.Sprint(v...))
+	l.logger.Output(2, fmt.Sprintln(v...))
 }
 
 // Debugf prints debug level message with format.
@@ -161,7 +161,7 @@ func (l *Logger) Info(v ...interface{}) {
 	}
 
 	l.logger.SetPrefix("I ")
-	l.logger.Output(2, fmt.Sprint(v...))
+	l.logger.Output(2, fmt.Sprintln(v...))
 }
 
 // Infof prints info level message with format.
@@ -181,7 +181,7 @@ func (l *Logger) Warn(v ...interface{}) {
 	}
 
 	l.logger.SetPrefix("W ")
-	l.logger.Output(2, fmt.Sprint(v...))
+	l.logger.Output(2, fmt.Sprintln(v...))
 }
 
 // Warnf prints warning level message with format.
@@ -201,7 +201,7 @@ func (l *Logger) Error(v ...interface{}) {
 	}
 
 	l.logger.SetPrefix("E ")
-	l.logger.Output(2, fmt.Sprint(v...))
+	l.logger.Output(2, fmt.Sprintln(v...))
 }
 
 // Errorf prints error level message with format.
@@ -221,7 +221,7 @@ func (l *Logger) Fatal(v ...interface{}) {
 	}
 
 	l.logger.SetPrefix("F ")
-	l.logger.Output(2, fmt.Sprint(v...))
+	l.logger.Output(2, fmt.Sprintln(v...))
 	os.Exit(1)
 }
 
