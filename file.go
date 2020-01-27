@@ -19,8 +19,36 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
+	"syscall"
 )
+
+// IsHidden checks whether the file specified by the given path is hidden.
+func (*GuluFile) IsHidden(path string) bool {
+	if 1 > len(path) {
+		return false
+	}
+
+	if "windows" != runtime.GOOS {
+		return "." == path[:1]
+	}
+
+	pointer, err := syscall.UTF16PtrFromString(path)
+	if nil != err {
+		logger.Errorf("Checks file [%s] is hidden failed: [%s]", path, err)
+
+		return false
+	}
+	attributes, err := syscall.GetFileAttributes(pointer)
+	if nil != err {
+		logger.Errorf("Checks file [%s] is hidden failed: [%s]", path, err)
+
+		return false
+	}
+
+	return 0 != attributes&syscall.FILE_ATTRIBUTE_HIDDEN
+}
 
 // GetFileSize get the length in bytes of file of the specified path.
 func (*GuluFile) GetFileSize(path string) int64 {

@@ -22,6 +22,14 @@ import (
 	"testing"
 )
 
+func TestIsHidden(t *testing.T) {
+	filename := "./file.go"
+	isHidden := File.IsHidden(filename)
+	if isHidden {
+		t.Error("file [" + filename + "] is not hidden")
+	}
+}
+
 func TestGetFileSize(t *testing.T) {
 	filename := "./file.go"
 	size := File.GetFileSize(filename)
