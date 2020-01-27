@@ -25,7 +25,7 @@ import (
 func TestIsHidden(t *testing.T) {
 	filename := "./file.go"
 	isHidden := File.IsHidden(filename)
-	if isHidden {
+	if isHidden && OS.IsWindows() {
 		t.Error("file [" + filename + "] is not hidden")
 	}
 }

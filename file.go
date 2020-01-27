@@ -26,11 +26,11 @@ import (
 
 // IsHidden checks whether the file specified by the given path is hidden.
 func (*GuluFile) IsHidden(path string) bool {
-	if 1 > len(path) {
-		return false
-	}
-
 	if "windows" != runtime.GOOS {
+		path = filepath.Base(path)
+		if 1 > len(path) {
+			return false
+		}
 		return "." == path[:1]
 	}
 
