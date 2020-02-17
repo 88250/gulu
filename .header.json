@@ -1,15 +1,15 @@
 {
-    "Dir": ".",
-    "Template": ".header.txt",
-    "Includes": [
-        "**.go"
-    ],
-    "Excludes": [
-        "vendor/**"
-    ],
-    "UseDefaultExcludes": true,
-    "Properties": {
-        "Year": "2019-present",
-        "Owner": "b3log.org"
-    }
+  "Dir": ".",
+  "Template": ".header.txt",
+  "Includes": [
+    "**.go"
+  ],
+  "Excludes": [
+    "vendor/**"
+  ],
+  "UseDefaultExcludes": true,
+  "Properties": {
+    "Year": "2019-present",
+    "Owner": "b3log.org"
+  }
 }
