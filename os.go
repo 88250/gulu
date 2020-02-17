@@ -31,6 +31,16 @@ func (*GuluOS) IsWindows() bool {
 	return "windows" == runtime.GOOS
 }
 
+// IsLinux determines whether current OS is Linux.
+func (*GuluOS) IsLinux() bool {
+	return "linux" == runtime.GOOS
+}
+
+// IsDarwin determines whether current OS is Darwin.
+func (*GuluOS) IsDarwin() bool {
+	return "darwin" == runtime.GOOS
+}
+
 // Pwd gets the path of current working directory.
 func (*GuluOS) Pwd() string {
 	file, _ := exec.LookPath(os.Args[0])
