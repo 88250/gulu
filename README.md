@@ -21,8 +21,129 @@ Go 语言常用工具库，这个轱辘还算圆！
 <a title="Author GitHub Followers" target="_blank" href="https://github.com/88250"><img src="https://img.shields.io/github/followers/88250.svg?label=Followers&style=social"></a>
 </p>
 
-* [Go 语言常用工具库，这个轱辘还算圆！](https://hacpai.com/article/1558689504145)
+## 💡 简介
 
-欢迎关注 B3log 开源社区微信公众号 `B3log开源`：
+[Gulu](https://github.com/88250/gulu) 是一款 Go 语言常用工具库。
 
-![image-d3c00d78](https://user-images.githubusercontent.com/873584/71566370-0d312c00-2af2-11ea-8ea1-0d45d6f0db20.png)
+欢迎到 [Gulu 官方讨论区](https://hacpai.com/tag/gulu)了解更多。同时也欢迎关注 B3log 开源社区微信公众号 `B3log开源`：
+
+![b3logos.png](https://img.hacpai.com/file/2019/10/image-d3c00d78.png)
+
+## ✨ 功能
+
+<details>
+<summary>文件操作 <code>gulu.File</code></summary>
+
+* 获取文件大小
+* 判断路径是否存在
+* 判断文件是否是图片
+* 按内容判断文件是否是可执行二进制
+* 判断文件是否是目录
+* 复制文件
+* 复制目录
+</details>
+
+<details>
+<summary>Go 语言 <code>gulu.Go</code></summary>
+
+* 获取 Go API 源码目录路径
+* 判断指定路径是否在 Go API 源码目录下
+* 获取格式化工具名 ["gofmt", "goimports"]
+* 获取 $GOBIN 下指定可执行程序名的绝对路径
+</details>
+
+
+<details>
+<summary>日志记录 <code>gulu.Log</code></summary>
+
+* 提供可指定日志级别的日志记录器
+</details>
+
+<details>
+<summary>网络相关 <code>gulu.Net</code></summary>
+
+* 获取本机第一张网卡的 IP 地址
+* 获取本机第一张网卡的 MAC 地址
+</details>
+
+<details>
+<summary>操作系统 <code>gulu.OS</code></summary>
+
+* 判断是否是 Windows
+* 判断是否是 Linux
+* 判断是否是 Darwin
+* 获取当前进程的工作目录
+* 获取用户 Home 目录路径
+</details>
+
+<details>
+<summary>panic 处理 <code>gulu.Panic</code></summary>
+
+* 包装 recover() 提供更好的报错日志格式
+</details>
+
+<details>
+<summary>随机数 <code>gulu.Rand</code></summary>
+
+* 随机字符串
+* 随机整数
+</details>
+
+<details>
+<summary>返回值相关 <code>gulu.Ret</code></summary>
+
+* 提供普适返回值结构
+</details>
+
+<details>
+<summary>Rune 相关 <code>gulu.Rune</code></summary>
+
+* 判断 rune 是否为数字或字母
+* 判断 rune 是否为字母
+</details>
+
+<details>
+<summary>字符串相关 <code>gulu.Str</code></summary>
+
+* 字符串是否包含在字符串数组中
+* 求最长公共子串
+</details>
+
+<details>
+<summary>Zip 压缩解压<code>gulu.Zip</code></summary>
+
+* Zip 压缩和解压
+</details>
+
+## 🗃 案例
+
+* [Pipe](https://github.com/b3log/pipe)：一款小而美的博客平台，专为程序员设计
+* [Wide](https://github.com/b3log/wide)：一款基于 Web 的 Go 语言 IDE，随时随地玩 golang
+* [BND](https://github.com/b3log/baidu-netdisk-downloaderx)：一款图形界面的百度网盘不限速下载器，支持 Windows、Linux 和 Mac
+* [协慌网](https://routinepanic.com)：专注编程问答汉化
+* [链滴笔记](https://github.com/88250/liandi)：一款桌面端笔记应用，支持 Windows、Mac 和 Linux
+
+## 💝 贡献
+
+Gulu 肯定有一些不足之处：
+
+* 代码不够优美
+* 文档不够清晰
+* 功能不够完善
+* 可能存在缺陷
+* ……
+
+希望大家能和我们一起来完善该项目，无论是提交需求建议还是代码改进，我们都非常欢迎！
+
+## 🏘️ 社区
+
+* [讨论区](https://hacpai.com/tag/gulu)
+* [报告问题](https://github.com/88250/gulu/issues/new/choose)
+
+## 📄 授权
+
+Gulu 使用 [木兰宽松许可证, 第2版](http://license.coscl.org.cn/MulanPSL2) 开源协议。
+
+## 🙏 鸣谢
+
+* [The Go Programming Language](https://golang.org)
