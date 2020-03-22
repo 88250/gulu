@@ -13,7 +13,7 @@ Go 语言常用工具库，这个轱辘还算圆！
 <a title="GitHub Commits" target="_blank" href="https://github.com/88250/gulu/commits/master"><img src="https://img.shields.io/github/commit-activity/m/88250/gulu.svg?style=flat-square"></a>
 <a title="Last Commit" target="_blank" href="https://github.com/88250/gulu/commits/master"><img src="https://img.shields.io/github/last-commit/88250/gulu.svg?style=flat-square&color=FF9900"></a>
 <a title="GitHub Pull Requests" target="_blank" href="https://github.com/88250/gulu/pulls"><img src="https://img.shields.io/github/issues-pr-closed/88250/gulu.svg?style=flat-square&color=FF9966"></a>
-<a title="Hits" target="_blank" href="https://github.com/b3log/hits"><img src="https://hits.b3log.org/88250/gulu.svg"></a>
+<a title="Hits" target="_blank" href="https://github.com/88250/hits"><img src="https://hits.b3log.org/88250/gulu.svg"></a>
 <br><br>
 <a title="GitHub Watchers" target="_blank" href="https://github.com/88250/gulu/watchers"><img src="https://img.shields.io/github/watchers/88250/gulu.svg?label=Watchers&style=social"></a>  
 <a title="GitHub Stars" target="_blank" href="https://github.com/88250/gulu/stargazers"><img src="https://img.shields.io/github/stars/88250/gulu.svg?label=Stars&style=social"></a>  
@@ -117,9 +117,9 @@ Go 语言常用工具库，这个轱辘还算圆！
 
 ## 🗃 案例
 
-* [Pipe](https://github.com/b3log/pipe)：一款小而美的博客平台，专为程序员设计
-* [Wide](https://github.com/b3log/wide)：一款基于 Web 的 Go 语言 IDE，随时随地玩 golang
-* [BND](https://github.com/b3log/baidu-netdisk-downloaderx)：一款图形界面的百度网盘不限速下载器，支持 Windows、Linux 和 Mac
+* [Pipe](https://github.com/88250/pipe)：一款小而美的博客平台，专为程序员设计
+* [Wide](https://github.com/88250/wide)：一款基于 Web 的 Go 语言 IDE，随时随地玩 golang
+* [BND](https://github.com/88250/baidu-netdisk-downloaderx)：一款图形界面的百度网盘不限速下载器，支持 Windows、Linux 和 Mac
 * [协慌网](https://routinepanic.com)：专注编程问答汉化
 * [链滴笔记](https://github.com/88250/liandi)：一款桌面端笔记应用，支持 Windows、Mac 和 Linux
 
