@@ -31,8 +31,7 @@ Go 语言常用工具库，这个轱辘还算圆！
 
 ## ✨ 功能
 
-<details>
-<summary>文件操作 <code>gulu.File</code></summary>
+### 文件操作 `gulu.File`
 
 * 获取文件大小
 * 判断路径是否存在
@@ -41,79 +40,57 @@ Go 语言常用工具库，这个轱辘还算圆！
 * 判断文件是否是目录
 * 复制文件
 * 复制目录
-</details>
 
-<details>
-<summary>Go 语言 <code>gulu.Go</code></summary>
+### Go 语言 `gulu.Go`
 
 * 获取 Go API 源码目录路径
 * 判断指定路径是否在 Go API 源码目录下
 * 获取格式化工具名 ["gofmt", "goimports"]
 * 获取 $GOBIN 下指定可执行程序名的绝对路径
-</details>
 
-
-<details>
-<summary>日志记录 <code>gulu.Log</code></summary>
+### 日志记录 `gulu.Log`
 
 * 提供可指定日志级别的日志记录器
-</details>
 
-<details>
-<summary>网络相关 <code>gulu.Net</code></summary>
+### 网络相关 `gulu.Net`
 
 * 获取本机第一张网卡的 IP 地址
 * 获取本机第一张网卡的 MAC 地址
-</details>
 
-<details>
-<summary>操作系统 <code>gulu.OS</code></summary>
+### 操作系统 `gulu.OS`
 
 * 判断是否是 Windows
 * 判断是否是 Linux
 * 判断是否是 Darwin
 * 获取当前进程的工作目录
 * 获取用户 Home 目录路径
-</details>
 
-<details>
-<summary>panic 处理 <code>gulu.Panic</code></summary>
+### panic 处理 `gulu.Panic`
 
 * 包装 recover() 提供更好的报错日志格式
-</details>
 
-<details>
-<summary>随机数 <code>gulu.Rand</code></summary>
+### 随机数 `gulu.Rand`
 
 * 随机字符串
 * 随机整数
-</details>
 
-<details>
-<summary>返回值相关 <code>gulu.Ret</code></summary>
+### 返回值 `gulu.Ret`
 
 * 提供普适返回值结构
-</details>
 
-<details>
-<summary>Rune 相关 <code>gulu.Rune</code></summary>
+### Rune `gulu.Rune`
 
 * 判断 rune 是否为数字或字母
 * 判断 rune 是否为字母
-</details>
 
-<details>
-<summary>字符串相关 <code>gulu.Str</code></summary>
+### 字符串 `gulu.Str`
 
 * 字符串是否包含在字符串数组中
 * 求最长公共子串
-</details>
 
-<details>
-<summary>Zip 压缩解压<code>gulu.Zip</code></summary>
+### Zip 压缩解压 `gulu.Zip`
 
 * Zip 压缩和解压
-</details>
 
 ## 🗃 案例
 
