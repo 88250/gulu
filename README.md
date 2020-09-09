@@ -25,7 +25,7 @@ Go 语言常用工具库，这个轱辘还算圆！
 
 [Gulu](https://github.com/88250/gulu) 是一款 Go 语言常用工具库。
 
-欢迎到 [Gulu 官方讨论区](https://hacpai.com/tag/gulu)了解更多。同时也欢迎关注 B3log 开源社区微信公众号 `B3log开源`：
+欢迎到 [Gulu 官方讨论区](https://ld246.com/tag/gulu)了解更多。同时也欢迎关注 B3log 开源社区微信公众号 `B3log开源`：
 
 ![b3logos.jpg](https://b3logfile.com/file/2020/08/b3logos-032af045.jpg)
 
@@ -114,7 +114,7 @@ Gulu 肯定有一些不足之处：
 
 ## 🏘️ 社区
 
-* [讨论区](https://hacpai.com/tag/gulu)
+* [讨论区](https://ld246.com/tag/gulu)
 * [报告问题](https://github.com/88250/gulu/issues/new/choose)
 
 ## 📄 授权
