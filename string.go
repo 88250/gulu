@@ -38,6 +38,7 @@ func (*GuluStr) Contains(str string, strs []string) bool {
 	return false
 }
 
+// ReplaceIgnoreCase replace searchStr with repl in the text, case-insensitively.
 func (*GuluStr) ReplaceIgnoreCase(text, searchStr, repl string) string {
 	buf := &bytes.Buffer{}
 	textLower := strings.ToLower(text)
@@ -52,7 +53,7 @@ func (*GuluStr) ReplaceIgnoreCase(text, searchStr, repl string) string {
 
 		buf.WriteString(text[:idx])
 		buf.WriteString(repl)
-		end = idx+searchStrLen
+		end = idx + searchStrLen
 		textLower = textLower[end:]
 	}
 	buf.WriteString(text[end:])
