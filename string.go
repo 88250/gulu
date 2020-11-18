@@ -13,6 +13,7 @@ package gulu
 import (
 	"bytes"
 	"strings"
+	"unicode/utf8"
 	"unsafe"
 )
 
@@ -86,6 +87,20 @@ func (*GuluStr) LCS(s1 string, s2 string) string {
 			}
 		}
 	}
-
 	return s1[xLongest-longest : xLongest]
+}
+
+// SubStr decode str into runes and get substring with the specified length.
+func (*GuluStr) SubStr(str string, length int) (ret string) {
+	var count int
+	for i := 0; i < len(str); {
+		r, size := utf8.DecodeRuneInString(str[i:])
+		i += size
+		ret += string(r)
+		count++
+		if length <= count {
+			break
+		}
+	}
+	return
 }

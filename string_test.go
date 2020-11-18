@@ -43,3 +43,12 @@ func TestLCS(t *testing.T) {
 		return
 	}
 }
+
+func TestSubStr(t *testing.T) {
+	expected := "foo测"
+	got := Str.SubStr("foo测试bar", 4)
+	if expected != got {
+		t.Errorf("expected [%s], got [%s]", expected, got)
+		return
+	}
+}
