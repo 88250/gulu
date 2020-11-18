@@ -10,7 +10,11 @@
 
 package gulu
 
-import "unsafe"
+import (
+	"bytes"
+	"strings"
+	"unsafe"
+)
 
 // FromBytes converts the specified byte array to a string.
 func (*GuluStr) FromBytes(bytes []byte) string {
@@ -31,8 +35,28 @@ func (*GuluStr) Contains(str string, strs []string) bool {
 			return true
 		}
 	}
-
 	return false
+}
+
+func (*GuluStr) ReplaceIgnoreCase(text, searchStr, repl string) string {
+	buf := &bytes.Buffer{}
+	textLower := strings.ToLower(text)
+	searchStrLower := strings.ToLower(searchStr)
+	searchStrLen := len(searchStr)
+	var end int
+	for {
+		idx := strings.Index(textLower, searchStrLower)
+		if 0 > idx {
+			break
+		}
+
+		buf.WriteString(text[:idx])
+		buf.WriteString(repl)
+		end = idx+searchStrLen
+		textLower = textLower[end:]
+	}
+	buf.WriteString(text[end:])
+	return buf.String()
 }
 
 // LCS gets the longest common substring of s1 and s2.

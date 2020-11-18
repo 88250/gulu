@@ -23,17 +23,23 @@ func TestToBytes(t *testing.T) {
 func TestContains(t *testing.T) {
 	if !Str.Contains("123", []string{"123", "345"}) {
 		t.Error("[\"123\", \"345\"] should contain \"123\"")
+		return
+	}
+}
 
+func TestReplaceIgnoreCase(t *testing.T) {
+	expected := "Foabcdr"
+	got := Str.ReplaceIgnoreCase("Foobar", "oBa", "abcd")
+	if expected != got {
+		t.Errorf("expected [%s], got [%s]", expected, got)
 		return
 	}
 }
 
 func TestLCS(t *testing.T) {
 	str := Str.LCS("123456", "abc34def")
-
 	if "34" != str {
 		t.Error("[\"123456\"] and [\"abc34def\"] should have the longest common substring [\"34\"]")
-
 		return
 	}
 }
