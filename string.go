@@ -61,6 +61,34 @@ func (*GuluStr) ReplaceIgnoreCase(text, searchStr, repl string) string {
 	return buf.String()
 }
 
+// ReplacesIgnoreCase replace searchStr-repl pairs in the text, case-insensitively.
+func (*GuluStr) ReplacesIgnoreCase(text string, searchStrRepl ...string) string {
+	if 1 == len(searchStrRepl)%2 {
+		return text
+	}
+
+	buf := &bytes.Buffer{}
+	textLower := strings.ToLower(text)
+	for i := 0; i < len(textLower); i++ {
+		sub := textLower[i:]
+		var found bool
+		for j := 0; j < len(searchStrRepl); j += 2 {
+			idx := strings.Index(sub, searchStrRepl[j])
+			if 0 != idx {
+				continue
+			}
+			buf.WriteString(searchStrRepl[j+1])
+			i += len(searchStrRepl[j]) - 1
+			found = true
+			break
+		}
+		if !found {
+			buf.WriteByte(text[i])
+		}
+	}
+	return buf.String()
+}
+
 // LCS gets the longest common substring of s1 and s2.
 //
 // Refers to http://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Longest_common_substring.

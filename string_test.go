@@ -36,6 +36,36 @@ func TestReplaceIgnoreCase(t *testing.T) {
 	}
 }
 
+func TestReplacesIgnoreCase(t *testing.T) {
+	expected := "abcdbarefgh"
+	got := Str.ReplacesIgnoreCase("Foobarbaz", "foo", "abcd", "baz", "efgh")
+	if expected != got {
+		t.Errorf("expected [%s], got [%s]", expected, got)
+		return
+	}
+
+	expected = "bar baz baz"
+	got = Str.ReplacesIgnoreCase("foo bar baz", "foo", "bar", "bar", "baz")
+	if expected != got {
+		t.Errorf("expected [%s], got [%s]", expected, got)
+		return
+	}
+
+	expected = "bar baz baz"
+	got = Str.ReplacesIgnoreCase("foo bar baz", "bar", "baz", "foo", "bar")
+	if expected != got {
+		t.Errorf("expected [%s], got [%s]", expected, got)
+		return
+	}
+
+	expected = "fazz bar barr"
+	got = Str.ReplacesIgnoreCase("foo bar baz", "oo", "azz", "az", "arr")
+	if expected != got {
+		t.Errorf("expected [%s], got [%s]", expected, got)
+		return
+	}
+}
+
 func TestLCS(t *testing.T) {
 	str := Str.LCS("123456", "abc34def")
 	if "34" != str {
