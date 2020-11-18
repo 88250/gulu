@@ -52,7 +52,7 @@ func TestReplacesIgnoreCase(t *testing.T) {
 	}
 
 	expected = "bar baz baz"
-	got = Str.ReplacesIgnoreCase("foo bar baz", "bar", "baz", "foo", "bar")
+	got = Str.ReplacesIgnoreCase("foo bar baz", "Bar", "baz", "foo", "bar")
 	if expected != got {
 		t.Errorf("expected [%s], got [%s]", expected, got)
 		return
@@ -60,6 +60,23 @@ func TestReplacesIgnoreCase(t *testing.T) {
 
 	expected = "fazz bar barr"
 	got = Str.ReplacesIgnoreCase("foo bar baz", "oo", "azz", "az", "arr")
+	if expected != got {
+		t.Errorf("expected [%s], got [%s]", expected, got)
+		return
+	}
+}
+
+func TestEncloseIgnoreCase(t *testing.T) {
+	var expected, got string
+	expected = "<mark>Foo</mark>bar<mark>baz</mark>"
+	got = Str.EncloseIgnoreCase("Foobarbaz", "<mark>", "</mark>", "foo", "baz")
+	if expected != got {
+		t.Errorf("expected [%s], got [%s]", expected, got)
+		return
+	}
+
+	expected = "F<mark>oo</mark><mark>ba</mark>r<mark>ba</mark>z"
+	got = Str.EncloseIgnoreCase("Foobarbaz", "<mark>", "</mark>", "Oo", "Ba")
 	if expected != got {
 		t.Errorf("expected [%s], got [%s]", expected, got)
 		return

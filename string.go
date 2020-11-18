@@ -73,12 +73,38 @@ func (*GuluStr) ReplacesIgnoreCase(text string, searchStrRepl ...string) string 
 		sub := textLower[i:]
 		var found bool
 		for j := 0; j < len(searchStrRepl); j += 2 {
-			idx := strings.Index(sub, searchStrRepl[j])
+			idx := strings.Index(sub, strings.ToLower(searchStrRepl[j]))
 			if 0 != idx {
 				continue
 			}
 			buf.WriteString(searchStrRepl[j+1])
 			i += len(searchStrRepl[j]) - 1
+			found = true
+			break
+		}
+		if !found {
+			buf.WriteByte(text[i])
+		}
+	}
+	return buf.String()
+}
+
+// Enclose encloses search strings with open and close, case-insensitively.
+func (*GuluStr) EncloseIgnoreCase(text, open, close string, searchStrs ...string) string {
+	buf := &bytes.Buffer{}
+	textLower := strings.ToLower(text)
+	for i := 0; i < len(textLower); i++ {
+		sub := textLower[i:]
+		var found bool
+		for j := 0; j < len(searchStrs); j++ {
+			idx := strings.Index(sub, strings.ToLower(searchStrs[j]))
+			if 0 != idx {
+				continue
+			}
+			buf.WriteString(open)
+			buf.WriteString(text[i:i+len(searchStrs[j])])
+			buf.WriteString(close)
+			i += len(searchStrs[j]) - 1
 			found = true
 			break
 		}
