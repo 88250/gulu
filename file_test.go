@@ -36,7 +36,6 @@ func TestGetFileSize(t *testing.T) {
 func TestIsExist(t *testing.T) {
 	if !File.IsExist(".") {
 		t.Error(". must exist")
-
 		return
 	}
 }
@@ -44,7 +43,6 @@ func TestIsExist(t *testing.T) {
 func TestIdBinary(t *testing.T) {
 	if File.IsBinary("not binary content") {
 		t.Error("The content should not be binary")
-
 		return
 	}
 }
@@ -52,7 +50,6 @@ func TestIdBinary(t *testing.T) {
 func TestIsImg(t *testing.T) {
 	if !File.IsImg(".jpg") {
 		t.Error(".jpg should be a valid extension of a image file")
-
 		return
 	}
 }
@@ -60,7 +57,6 @@ func TestIsImg(t *testing.T) {
 func TestIsDir(t *testing.T) {
 	if !File.IsDir(".") {
 		t.Error(". should be a directory")
-
 		return
 	}
 }
@@ -74,7 +70,6 @@ func TestCopyDir(t *testing.T) {
 	err := File.CopyDir(testcopydir, dest)
 	if nil != err {
 		t.Error("Copy dir failed: ", err)
-
 		return
 	}
 }
@@ -85,7 +80,16 @@ func TestCopyFile(t *testing.T) {
 	err := File.CopyFile("./file.go", dest)
 	if nil != err {
 		t.Error("Copy file failed: ", err)
+		return
+	}
+}
 
+func TestCopy(t *testing.T) {
+	dest := filepath.Join(testdataDir, "file.go")
+	defer os.Remove(dest)
+	err := File.Copy("./file.go", dest)
+	if nil != err {
+		t.Error("Copy failed: ", err)
 		return
 	}
 }

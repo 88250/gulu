@@ -75,8 +75,20 @@ func (*GuluFile) IsDir(path string) bool {
 	return fio.IsDir()
 }
 
+// Copy copies the source to the dest.
+func (gl *GuluFile) Copy(source, dest string) (err error) {
+	if !gl.IsExist(source) {
+		return os.ErrNotExist
+	}
+
+	if gl.IsDir(source) {
+		return gl.CopyDir(source, dest)
+	}
+	return gl.CopyFile(source, dest)
+}
+
 // CopyFile copies the source file to the dest file.
-func (*GuluFile) CopyFile(source string, dest string) (err error) {
+func (*GuluFile) CopyFile(source, dest string) (err error) {
 	sourcefile, err := os.Open(source)
 	if err != nil {
 		return err
@@ -103,7 +115,7 @@ func (*GuluFile) CopyFile(source string, dest string) (err error) {
 }
 
 // CopyDir copies the source directory to the dest directory.
-func (*GuluFile) CopyDir(source string, dest string) (err error) {
+func (*GuluFile) CopyDir(source, dest string) (err error) {
 	sourceinfo, err := os.Stat(source)
 	if err != nil {
 		return err
