@@ -96,6 +96,10 @@ func (*GuluFile) CopyFile(source, dest string) (err error) {
 
 	defer sourcefile.Close()
 
+	if err = os.MkdirAll(filepath.Dir(dest), 0755); nil != err {
+		return
+	}
+
 	destfile, err := os.Create(dest)
 	if err != nil {
 		return err
