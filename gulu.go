@@ -13,9 +13,6 @@ package gulu
 
 import "os"
 
-// Version is the version of Gulu.
-const Version = "v1.1.6"
-
 // Logger is the logger used in Gulu internally.
 var logger = Log.NewLogger(os.Stdout)
 
