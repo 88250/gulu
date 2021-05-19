@@ -12,10 +12,44 @@ package gulu
 
 import (
 	"io"
+	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 )
+
+// WriteFileSafer writes the data to a temp file and atomically move if everything else succeeds.
+func (GuluFile) WriteFileSafer(writePath string, data []byte, perm os.FileMode) error {
+	// credits: https://github.com/vitessio/vitess/blob/master/go/ioutil2/ioutil.go
+
+	dir, name := path.Split(writePath)
+	f, err := ioutil.TempFile(dir, name)
+	if nil != err {
+		return err
+	}
+
+	if _, err = f.Write(data); nil == err {
+		err = f.Sync()
+	}
+
+	if closeErr := f.Close(); nil == err {
+		err = closeErr
+	}
+
+	if permErr := os.Chmod(f.Name(), perm); nil == err {
+		err = permErr
+	}
+
+	if nil == err {
+		err = os.Rename(f.Name(), writePath) // Not atomic on Windows
+	}
+
+	if nil != err {
+		os.Remove(f.Name())
+	}
+	return err
+}
 
 // GetFileSize get the length in bytes of file of the specified path.
 func (*GuluFile) GetFileSize(path string) int64 {

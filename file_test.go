@@ -17,6 +17,14 @@ import (
 	"testing"
 )
 
+func TestWriteFileSafer(t *testing.T) {
+	writePath := "testdata/filewrite.go"
+	defer os.RemoveAll(writePath)
+	if err := File.WriteFileSafer(writePath, []byte("test"), 0644); nil != err {
+		t.Errorf("write file [%s] failed: %s", writePath, err)
+	}
+}
+
 func TestIsHidden(t *testing.T) {
 	filename := "./file.go"
 	isHidden := File.IsHidden(filename)
