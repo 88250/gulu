@@ -14,7 +14,6 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 )
@@ -23,7 +22,7 @@ import (
 func (GuluFile) WriteFileSafer(writePath string, data []byte, perm os.FileMode) error {
 	// credits: https://github.com/vitessio/vitess/blob/master/go/ioutil2/ioutil.go
 
-	dir, name := path.Split(writePath)
+	dir, name := filepath.Split(writePath)
 	f, err := ioutil.TempFile(dir, name)
 	if nil != err {
 		return err
