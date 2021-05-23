@@ -17,17 +17,17 @@ import (
 )
 
 var testdataDir = "testdata"
-var packageName = filepath.Join(testdataDir, "test_zip")
+var zipDirPath = filepath.Join(testdataDir, "test_zip")
 
 func TestCreate(t *testing.T) {
-	zipFile, err := Zip.Create(packageName + ".zip")
+	zipFile, err := Zip.Create(zipDirPath + ".zip")
 	if nil != err {
 		t.Error(err)
 
 		return
 	}
 
-	zipFile.AddDirectoryN(".", "testdata")
+	zipFile.AddDirectoryN(".", testdataDir)
 	if nil != err {
 		t.Error(err)
 
@@ -43,7 +43,7 @@ func TestCreate(t *testing.T) {
 }
 
 func TestUnzip(t *testing.T) {
-	err := Zip.Unzip(packageName+".zip", packageName)
+	err := Zip.Unzip(zipDirPath+".zip", zipDirPath)
 	if nil != err {
 		t.Error(err)
 
@@ -55,21 +55,21 @@ func _TestEmptyDir(t *testing.T) {
 	dir1 := "/dir/subDir1"
 	dir2 := "/dir/subDir2"
 
-	err := os.MkdirAll(packageName+dir1, os.ModeDir)
+	err := os.MkdirAll(zipDirPath+dir1, os.ModeDir)
 	if nil != err {
 		t.Error(err)
 
 		return
 	}
 
-	err = os.MkdirAll(packageName+dir2, os.ModeDir)
+	err = os.MkdirAll(zipDirPath+dir2, os.ModeDir)
 	if nil != err {
 		t.Error(err)
 
 		return
 	}
 
-	f, err := os.Create(packageName + dir2 + "/file")
+	f, err := os.Create(zipDirPath + dir2 + "/file")
 	if nil != err {
 		t.Error(err)
 
@@ -77,14 +77,14 @@ func _TestEmptyDir(t *testing.T) {
 	}
 	f.Close()
 
-	zipFile, err := Zip.Create(packageName + "/dir.zip")
+	zipFile, err := Zip.Create(zipDirPath + "/dir.zip")
 	if nil != err {
 		t.Error(err)
 
 		return
 	}
 
-	zipFile.AddDirectoryN("dir", packageName+"/dir")
+	zipFile.AddDirectoryN("dir", zipDirPath+"/dir")
 	if nil != err {
 		t.Error(err)
 
@@ -98,32 +98,32 @@ func _TestEmptyDir(t *testing.T) {
 		return
 	}
 
-	err = Zip.Unzip(packageName+"/dir.zip", packageName+"/unzipDir")
+	err = Zip.Unzip(zipDirPath+"/dir.zip", zipDirPath+"/unzipDir")
 	if nil != err {
 		t.Error(err)
 
 		return
 	}
 
-	if !File.IsExist(packageName+"/unzipDir") || !File.IsDir(packageName+"/unzipDir") {
+	if !File.IsExist(zipDirPath+"/unzipDir") || !File.IsDir(zipDirPath+"/unzipDir") {
 		t.Error("Unzip failed")
 
 		return
 	}
 
-	if !File.IsExist(packageName+"/unzipDir"+dir1) || !File.IsDir(packageName+"/unzipDir"+dir1) {
+	if !File.IsExist(zipDirPath+"/unzipDir"+dir1) || !File.IsDir(zipDirPath+"/unzipDir"+dir1) {
 		t.Error("Unzip failed")
 
 		return
 	}
 
-	if !File.IsExist(packageName+"/unzipDir"+dir2) || !File.IsDir(packageName+"/unzipDir"+dir2) {
+	if !File.IsExist(zipDirPath+"/unzipDir"+dir2) || !File.IsDir(zipDirPath+"/unzipDir"+dir2) {
 		t.Error("Unzip failed")
 
 		return
 	}
 
-	if !File.IsExist(packageName+"/unzipDir"+dir2+"/file") || File.IsDir(packageName+"/unzipDir"+dir2+"/file") {
+	if !File.IsExist(zipDirPath+"/unzipDir"+dir2+"/file") || File.IsDir(zipDirPath+"/unzipDir"+dir2+"/file") {
 		t.Error("Unzip failed")
 
 		return
@@ -134,8 +134,12 @@ func TestMain(m *testing.M) {
 	retCode := m.Run()
 
 	// clean test data
-	os.RemoveAll(packageName + ".zip")
-	os.RemoveAll(packageName)
+	os.RemoveAll(zipDirPath + ".zip")
+	os.RemoveAll(zipDirPath)
+
+	os.RemoveAll(tarDirPath + ".tar")
+	os.RemoveAll(tarDirPath)
+	os.RemoveAll(untarDirPath)
 
 	os.Exit(retCode)
 }

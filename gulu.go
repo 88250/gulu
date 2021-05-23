@@ -37,6 +37,8 @@ type (
 	GuluStr byte
 	// GuluZip is the receiver of zip utilities
 	GuluZip byte
+	// GuluTar is the receiver of tar utilities
+	GuluTar byte
 	// GuluJSON is the receiver of JSON utilities
 	GuluJSON byte
 )
@@ -62,6 +64,8 @@ var (
 	Str GuluStr
 	// Zip utilities
 	Zip GuluZip
+	// Tar utilities
+	Tar GuluTar
 	// JSON utilities
 	JSON GuluJSON
 )
