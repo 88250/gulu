@@ -160,7 +160,6 @@ func (*GuluFile) CopyDir(source, dest string) (err error) {
 	if err = os.MkdirAll(dest, sourceinfo.Mode()); err != nil {
 		return err
 	}
-	os.Chtimes(dest, sourceinfo.ModTime(), sourceinfo.ModTime())
 
 	directory, err := os.Open(source)
 	if err != nil {
@@ -190,5 +189,7 @@ func (*GuluFile) CopyDir(source, dest string) (err error) {
 			}
 		}
 	}
+
+	os.Chtimes(dest, sourceinfo.ModTime(), sourceinfo.ModTime())
 	return nil
 }
