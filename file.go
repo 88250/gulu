@@ -126,7 +126,6 @@ func (*GuluFile) CopyFile(source, dest string) (err error) {
 	if err != nil {
 		return err
 	}
-
 	defer sourcefile.Close()
 
 	if err = os.MkdirAll(filepath.Dir(dest), 0755); nil != err {
@@ -137,17 +136,16 @@ func (*GuluFile) CopyFile(source, dest string) (err error) {
 	if err != nil {
 		return err
 	}
-
 	defer destfile.Close()
 
 	_, err = io.Copy(destfile, sourcefile)
-	if err == nil {
+	if nil == err {
 		sourceinfo, err := os.Stat(source)
-		if err != nil {
-			err = os.Chmod(dest, sourceinfo.Mode())
+		if nil == err {
+			os.Chmod(dest, sourceinfo.Mode())
+			os.Chtimes(dest, sourceinfo.ModTime(), sourceinfo.ModTime())
 		}
 	}
-
 	return nil
 }
 
@@ -159,16 +157,15 @@ func (*GuluFile) CopyDir(source, dest string) (err error) {
 	}
 
 	// create dest dir
-	err = os.MkdirAll(dest, sourceinfo.Mode())
-	if err != nil {
+	if err = os.MkdirAll(dest, sourceinfo.Mode()); err != nil {
 		return err
 	}
+	os.Chtimes(dest, sourceinfo.ModTime(), sourceinfo.ModTime())
 
 	directory, err := os.Open(source)
 	if err != nil {
 		return err
 	}
-
 	defer directory.Close()
 
 	objects, err := directory.Readdir(-1)
@@ -193,6 +190,5 @@ func (*GuluFile) CopyDir(source, dest string) (err error) {
 			}
 		}
 	}
-
 	return nil
 }
