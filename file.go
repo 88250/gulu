@@ -16,6 +16,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 // WriteFileSafer writes the data to a temp file and atomically move if everything else succeeds.
@@ -41,7 +42,18 @@ func (GuluFile) WriteFileSafer(writePath string, data []byte, perm os.FileMode) 
 	}
 
 	if nil == err {
-		err = os.Rename(f.Name(), writePath) // Not atomic on Windows
+		for i := 0; i < 3; i++ {
+			err = os.Rename(f.Name(), writePath) // Windows 上重命名是非原子的
+			if nil == err {
+				break
+			}
+
+			if strings.Contains(err.Error(), "Access is denied") { // 文件可能是被锁定
+				time.Sleep(100 * time.Millisecond)
+				continue
+			}
+			break
+		}
 	}
 
 	if nil != err {
