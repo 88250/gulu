@@ -42,9 +42,11 @@ func (GuluFile) WriteFileSafer(writePath string, data []byte, perm os.FileMode) 
 	}
 
 	if nil == err {
+		var renamed bool
 		for i := 0; i < 3; i++ {
 			err = os.Rename(f.Name(), writePath) // Windows 上重命名是非原子的
 			if nil == err {
+				renamed = true
 				break
 			}
 
@@ -53,6 +55,11 @@ func (GuluFile) WriteFileSafer(writePath string, data []byte, perm os.FileMode) 
 				continue
 			}
 			break
+		}
+
+		if !renamed {
+			// 直接写入
+			err = os.WriteFile(writePath, data, perm)
 		}
 	}
 
