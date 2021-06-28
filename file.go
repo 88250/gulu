@@ -50,7 +50,7 @@ func (GuluFile) WriteFileSafer(writePath string, data []byte, perm os.FileMode) 
 				break
 			}
 
-			if strings.Contains(err.Error(), "Access is denied") { // 文件可能是被锁定
+			if errMsg := strings.ToLower(err.Error()); strings.Contains(errMsg, "access is denied") || strings.Contains(errMsg, "used by another process") { // 文件可能是被锁定
 				time.Sleep(100 * time.Millisecond)
 				continue
 			}
