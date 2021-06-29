@@ -45,7 +45,7 @@ func (GuluFile) WriteFileSaferByHandle(handle *os.File, data []byte) error {
 		err = handle.Sync()
 	}
 
-	if nil != err {
+	if nil == err {
 		os.Remove(f.Name())
 	}
 	return err
