@@ -38,7 +38,11 @@ func (GuluFile) WriteFileSaferByHandle(handle *os.File, data []byte) error {
 	}
 
 	if nil == err {
-		_, err = handle.Write(data)
+		err = handle.Truncate(0)
+	}
+
+	if nil == err {
+		_, err = handle.WriteAt(data, 0)
 	}
 
 	if nil == err {
