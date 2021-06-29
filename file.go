@@ -19,6 +19,38 @@ import (
 	"time"
 )
 
+// WriteFileSaferByHandle writes the data to a temp file and writes the original file if everything else succeeds.
+// Note: This function does not close the file handle after writing data.
+func (GuluFile) WriteFileSaferByHandle(handle *os.File, data []byte) error {
+	writePath := handle.Name()
+	dir, name := filepath.Split(writePath)
+	f, err := ioutil.TempFile(dir, name)
+	if nil != err {
+		return err
+	}
+
+	if _, err = f.Write(data); nil == err {
+		err = f.Sync()
+	}
+
+	if closeErr := f.Close(); nil == err {
+		err = closeErr
+	}
+
+	if nil == err {
+		_, err = handle.Write(data)
+	}
+
+	if nil == err {
+		err = handle.Sync()
+	}
+
+	if nil != err {
+		os.Remove(f.Name())
+	}
+	return err
+}
+
 // WriteFileSafer writes the data to a temp file and atomically move if everything else succeeds.
 func (GuluFile) WriteFileSafer(writePath string, data []byte, perm os.FileMode) error {
 	// credits: https://github.com/vitessio/vitess/blob/master/go/ioutil2/ioutil.go
