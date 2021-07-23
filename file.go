@@ -200,31 +200,35 @@ func (gl *GuluFile) CopyFileNewtimes(source, dest string) (err error) {
 }
 
 func (*GuluFile) copyFile(source, dest string, chtimes bool) (err error) {
-	sourcefile, err := os.Open(source)
-	if err != nil {
-		return err
-	}
-	defer sourcefile.Close()
-
 	if err = os.MkdirAll(filepath.Dir(dest), 0755); nil != err {
 		return
 	}
 
+	sourcefile, err := os.Open(source)
+	if err != nil {
+		return err
+	}
 	destfile, err := os.Create(dest)
 	if err != nil {
 		return err
 	}
-	defer destfile.Close()
-
 	_, err = io.Copy(destfile, sourcefile)
-	if nil == err {
-		sourceinfo, err := os.Stat(source)
-		if nil == err {
-			os.Chmod(dest, sourceinfo.Mode())
-			if chtimes {
-				os.Chtimes(dest, sourceinfo.ModTime(), sourceinfo.ModTime())
-			}
-		}
+	sourcefile.Close()
+	if nil != err {
+		destfile.Close()
+		return
+	}
+
+	sourceinfo, err := os.Stat(source)
+	if nil != err {
+		destfile.Close()
+		return
+	}
+
+	destfile.Chmod(sourceinfo.Mode())
+	destfile.Close()
+	if chtimes {
+		os.Chtimes(dest, sourceinfo.ModTime(), sourceinfo.ModTime())
 	}
 	return nil
 }
