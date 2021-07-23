@@ -164,6 +164,7 @@ func (*GuluFile) IsDir(path string) bool {
 }
 
 // Copy copies the source to the dest.
+// Keep the dest access/mod time as the same as the source.
 func (gl *GuluFile) Copy(source, dest string) (err error) {
 	if !gl.IsExist(source) {
 		return os.ErrNotExist
@@ -176,7 +177,18 @@ func (gl *GuluFile) Copy(source, dest string) (err error) {
 }
 
 // CopyFile copies the source file to the dest file.
-func (*GuluFile) CopyFile(source, dest string) (err error) {
+// Keep the dest access/mod time as the same as the source.
+func (gl *GuluFile) CopyFile(source, dest string) (err error) {
+	return gl.copyFile(source, dest, true)
+}
+
+// CopyFileNewtimes copies the source file to the dest file.
+// Do not keep the dest access/mod time as the same as the source.
+func (gl *GuluFile) CopyFileNewtimes(source, dest string) (err error) {
+	return gl.copyFile(source, dest, false)
+}
+
+func (*GuluFile) copyFile(source, dest string, chtimes bool) (err error) {
 	sourcefile, err := os.Open(source)
 	if err != nil {
 		return err
@@ -198,14 +210,27 @@ func (*GuluFile) CopyFile(source, dest string) (err error) {
 		sourceinfo, err := os.Stat(source)
 		if nil == err {
 			os.Chmod(dest, sourceinfo.Mode())
-			os.Chtimes(dest, sourceinfo.ModTime(), sourceinfo.ModTime())
+			if chtimes {
+				os.Chtimes(dest, sourceinfo.ModTime(), sourceinfo.ModTime())
+			}
 		}
 	}
 	return nil
 }
 
 // CopyDir copies the source directory to the dest directory.
-func (*GuluFile) CopyDir(source, dest string) (err error) {
+// Keep the dest access/mod time as the same as the source.
+func (gl *GuluFile) CopyDir(source, dest string) (err error) {
+	return gl.copyDir(source, dest, true)
+}
+
+// CopyDirNewtimes copies the source directory to the dest directory.
+// Do not keep the dest access/mod time as the same as the source.
+func (gl *GuluFile) CopyDirNewtimes(source, dest string) (err error) {
+	return gl.copyDir(source, dest, false)
+}
+
+func (*GuluFile) copyDir(source, dest string, chtimes bool) (err error) {
 	sourceinfo, err := os.Stat(source)
 	if err != nil {
 		return err
@@ -245,6 +270,8 @@ func (*GuluFile) CopyDir(source, dest string) (err error) {
 		}
 	}
 
-	os.Chtimes(dest, sourceinfo.ModTime(), sourceinfo.ModTime())
+	if chtimes {
+		os.Chtimes(dest, sourceinfo.ModTime(), sourceinfo.ModTime())
+	}
 	return nil
 }
