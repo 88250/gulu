@@ -204,33 +204,38 @@ func (*GuluFile) copyFile(source, dest string, chtimes bool) (err error) {
 		return
 	}
 
-	sourcefile, err := os.Open(source)
-	if err != nil {
-		return err
-	}
 	destfile, err := os.Create(dest)
 	if err != nil {
 		return err
 	}
-	_, err = io.Copy(destfile, sourcefile)
-	sourcefile.Close()
-	if nil != err {
-		destfile.Close()
-		return
-	}
+	defer destfile.Close()
 
 	sourceinfo, err := os.Stat(source)
 	if nil != err {
-		destfile.Close()
 		return
 	}
 
-	destfile.Chmod(sourceinfo.Mode())
-	destfile.Close()
-	if chtimes {
-		os.Chtimes(dest, sourceinfo.ModTime(), sourceinfo.ModTime())
+	if err = os.Chmod(dest, sourceinfo.Mode()); nil != err {
+		return
 	}
-	return nil
+
+	sourcefile, err := os.Open(source)
+	if err != nil {
+		return err
+	}
+	defer sourcefile.Close()
+
+	_, err = io.Copy(destfile, sourcefile)
+	if nil != err {
+		return
+	}
+
+	if chtimes {
+		if err = os.Chtimes(dest, sourceinfo.ModTime(), sourceinfo.ModTime()); nil != err {
+			return
+		}
+	}
+	return
 }
 
 // CopyDir copies the source directory to the dest directory.
@@ -245,13 +250,12 @@ func (gl *GuluFile) CopyDirNewtimes(source, dest string) (err error) {
 	return gl.copyDir(source, dest, false)
 }
 
-func (*GuluFile) copyDir(source, dest string, chtimes bool) (err error) {
+func (gl *GuluFile) copyDir(source, dest string, chtimes bool) (err error) {
 	sourceinfo, err := os.Stat(source)
 	if err != nil {
 		return err
 	}
 
-	// create dest dir
 	if err = os.MkdirAll(dest, 0755); err != nil {
 		return err
 	}
@@ -261,19 +265,18 @@ func (*GuluFile) copyDir(source, dest string, chtimes bool) (err error) {
 		return err
 	}
 
-	for _, obj := range dirs {
-		srcFilePath := filepath.Join(source, obj.Name())
-		destFilePath := filepath.Join(dest, obj.Name())
+	for _, f := range dirs {
+		srcFilePath := filepath.Join(source, f.Name())
+		destFilePath := filepath.Join(dest, f.Name())
 
-		if obj.IsDir() {
-			// create sub-directories - recursively
-			err = File.CopyDir(srcFilePath, destFilePath)
+		if f.IsDir() {
+			err = gl.copyDir(srcFilePath, destFilePath, chtimes)
 			if err != nil {
 				logger.Error(err)
 				return
 			}
 		} else {
-			err = File.CopyFile(srcFilePath, destFilePath)
+			err = gl.copyFile(srcFilePath, destFilePath, chtimes)
 			if err != nil {
 				logger.Error(err)
 				return
@@ -282,7 +285,9 @@ func (*GuluFile) copyDir(source, dest string, chtimes bool) (err error) {
 	}
 
 	if chtimes {
-		os.Chtimes(dest, sourceinfo.ModTime(), sourceinfo.ModTime())
+		if err = os.Chtimes(dest, sourceinfo.ModTime(), sourceinfo.ModTime()); nil != err {
+			return
+		}
 	}
 	return nil
 }
