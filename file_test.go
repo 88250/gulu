@@ -15,6 +15,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"testing"
+	"time"
 )
 
 func TestWriteFileSafer(t *testing.T) {
@@ -130,6 +131,7 @@ func TestCopyDirNewtimes(t *testing.T) {
 	dest := filepath.Join(testdataDir, source)
 	defer os.Remove(dest)
 
+	time.Sleep(100 * time.Millisecond)
 	err := File.CopyDirNewtimes(source, dest)
 	if nil != err {
 		t.Error("Copy dir failed: ", err)
