@@ -155,11 +155,9 @@ func (*GuluFile) IsDir(path string) bool {
 	}
 
 	if nil != err {
-		logger.Warnf("Determines whether [%s] is a directory failed: [%v]", path, err)
-
+		logger.Warnf("determines whether [%s] is a directory failed: [%v]", path, err)
 		return false
 	}
-
 	return fio.IsDir()
 }
 
@@ -250,9 +248,10 @@ func (*GuluFile) copyDir(source, dest string, chtimes bool) (err error) {
 	}
 
 	// create dest dir
-	if err = os.MkdirAll(dest, sourceinfo.Mode()); err != nil {
+	if err = os.MkdirAll(dest, 0755); err != nil {
 		return err
 	}
+	os.Chmod(dest, sourceinfo.Mode())
 
 	directory, err := os.Open(source)
 	if err != nil {
@@ -274,11 +273,13 @@ func (*GuluFile) copyDir(source, dest string, chtimes bool) (err error) {
 			err = File.CopyDir(srcFilePath, destFilePath)
 			if err != nil {
 				logger.Error(err)
+				return
 			}
 		} else {
 			err = File.CopyFile(srcFilePath, destFilePath)
 			if err != nil {
 				logger.Error(err)
+				return
 			}
 		}
 	}
