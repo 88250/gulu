@@ -251,20 +251,13 @@ func (*GuluFile) copyDir(source, dest string, chtimes bool) (err error) {
 	if err = os.MkdirAll(dest, 0755); err != nil {
 		return err
 	}
-	os.Chmod(dest, sourceinfo.Mode())
 
-	directory, err := os.Open(source)
-	if err != nil {
-		return err
-	}
-	defer directory.Close()
-
-	objects, err := directory.Readdir(-1)
+	dirs, err := os.ReadDir(source)
 	if err != nil {
 		return err
 	}
 
-	for _, obj := range objects {
+	for _, obj := range dirs {
 		srcFilePath := filepath.Join(source, obj.Name())
 		destFilePath := filepath.Join(dest, obj.Name())
 
