@@ -131,7 +131,8 @@ func TestCopyDirNewtimes(t *testing.T) {
 	dest := filepath.Join(testdataDir, source)
 	defer os.Remove(dest)
 
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(100 * time.Millisecond) // CI
+
 	err := File.CopyDirNewtimes(source, dest)
 	if nil != err {
 		t.Error("Copy dir failed: ", err)
@@ -140,8 +141,6 @@ func TestCopyDirNewtimes(t *testing.T) {
 
 	sourceStat, _ := os.Stat(source)
 	destStat, _ := os.Stat(dest)
-	t.Log(sourceStat.ModTime())
-	t.Log(destStat.ModTime())
 	if sourceStat.ModTime() == destStat.ModTime() {
 		t.Error("mod time is equal")
 		return
