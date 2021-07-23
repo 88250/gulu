@@ -176,6 +176,19 @@ func (gl *GuluFile) Copy(source, dest string) (err error) {
 	return gl.CopyFile(source, dest)
 }
 
+// CopyNewtimes copies the source to the dest.
+// Do not keep the dest access/mod time as the same as the source.
+func (gl *GuluFile) CopyNewtimes(source, dest string) (err error) {
+	if !gl.IsExist(source) {
+		return os.ErrNotExist
+	}
+
+	if gl.IsDir(source) {
+		return gl.CopyDirNewtimes(source, dest)
+	}
+	return gl.CopyFileNewtimes(source, dest)
+}
+
 // CopyFile copies the source file to the dest file.
 // Keep the dest access/mod time as the same as the source.
 func (gl *GuluFile) CopyFile(source, dest string) (err error) {

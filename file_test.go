@@ -70,24 +70,39 @@ func TestIsDir(t *testing.T) {
 }
 
 func TestCopyDir(t *testing.T) {
-	testcopydir := "testcopydir"
-	os.Mkdir(testcopydir, 0644)
-	dest := filepath.Join(testdataDir, testcopydir)
+	source := "testcopydir"
+	os.Mkdir(source, 0644)
+	dest := filepath.Join(testdataDir, source)
 	defer os.Remove(dest)
 
-	err := File.CopyDir(testcopydir, dest)
+	err := File.CopyDir(source, dest)
 	if nil != err {
 		t.Error("Copy dir failed: ", err)
+		return
+	}
+
+	sourceStat, _ := os.Stat(source)
+	destStat, _ := os.Stat(dest)
+	if sourceStat.ModTime() != destStat.ModTime() {
+		t.Error("mod time is not equal")
 		return
 	}
 }
 
 func TestCopyFile(t *testing.T) {
+	source := "./file.go"
 	dest := filepath.Join(testdataDir, "file.go")
 	defer os.Remove(dest)
-	err := File.CopyFile("./file.go", dest)
+	err := File.CopyFile(source, dest)
 	if nil != err {
 		t.Error("Copy file failed: ", err)
+		return
+	}
+
+	sourceStat, _ := os.Stat(source)
+	destStat, _ := os.Stat(dest)
+	if sourceStat.ModTime() != destStat.ModTime() {
+		t.Error("mod time is not equal")
 		return
 	}
 }
@@ -98,6 +113,69 @@ func TestCopy(t *testing.T) {
 	err := File.Copy("./file.go", dest)
 	if nil != err {
 		t.Error("Copy failed: ", err)
+		return
+	}
+
+	sourceStat, _ := os.Stat("./file.go")
+	destStat, _ := os.Stat(dest)
+	if sourceStat.ModTime() != destStat.ModTime() {
+		t.Error("mod time is not equal")
+		return
+	}
+}
+
+func TestCopyDirNewtimes(t *testing.T) {
+	source := "testcopydir"
+	os.Mkdir(source, 0644)
+	dest := filepath.Join(testdataDir, source)
+	defer os.Remove(dest)
+
+	err := File.CopyDirNewtimes(source, dest)
+	if nil != err {
+		t.Error("Copy dir failed: ", err)
+		return
+	}
+
+	sourceStat, _ := os.Stat(source)
+	destStat, _ := os.Stat(dest)
+	if sourceStat.ModTime() == destStat.ModTime() {
+		t.Error("mod time is equal")
+		return
+	}
+}
+
+func TestCopyFileNewtimes(t *testing.T) {
+	source := "./file.go"
+	dest := filepath.Join(testdataDir, "file.go")
+	defer os.Remove(dest)
+	err := File.CopyFileNewtimes(source, dest)
+	if nil != err {
+		t.Error("Copy file failed: ", err)
+		return
+	}
+
+	sourceStat, _ := os.Stat(source)
+	destStat, _ := os.Stat(dest)
+	if sourceStat.ModTime() == destStat.ModTime() {
+		t.Error("mod time is equal")
+		return
+	}
+}
+
+func TestCopyNewtimes(t *testing.T) {
+	source := "./file.go"
+	dest := filepath.Join(testdataDir, "file.go")
+	defer os.Remove(dest)
+	err := File.CopyNewtimes(source, dest)
+	if nil != err {
+		t.Error("Copy failed: ", err)
+		return
+	}
+
+	sourceStat, _ := os.Stat(source)
+	destStat, _ := os.Stat(dest)
+	if sourceStat.ModTime() == destStat.ModTime() {
+		t.Error("mod time is equal")
 		return
 	}
 }
