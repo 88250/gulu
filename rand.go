@@ -38,7 +38,7 @@ func (*GuluRand) Ints(from, to, size int) []int {
 // String returns a random string ['a', 'z'] and ['0', '9'] in the specified length.
 func (*GuluRand) String(length int) string {
 	rand.Seed(time.Now().UTC().UnixNano())
-	time.Sleep(time.Nanosecond)
+	time.Sleep(10 * time.Nanosecond)
 
 	letter := []rune("abcdefghijklmnopqrstuvwxyz0123456789")
 	b := make([]rune, length)
@@ -51,6 +51,6 @@ func (*GuluRand) String(length int) string {
 // Int returns a random integer in range [min, max].
 func (*GuluRand) Int(min int, max int) int {
 	rand.Seed(time.Now().UnixNano())
-	time.Sleep(time.Nanosecond)
+	time.Sleep(10 * time.Nanosecond)
 	return min + rand.Intn(max-min)
 }

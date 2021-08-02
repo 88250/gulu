@@ -12,7 +12,6 @@ package gulu
 
 import (
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -24,7 +23,9 @@ import (
 func (GuluFile) WriteFileSaferByHandle(handle *os.File, data []byte) error {
 	writePath := handle.Name()
 	dir, name := filepath.Split(writePath)
-	f, err := ioutil.TempFile(dir, name+"*.tmp")
+
+	tmp := filepath.Join(dir, name+Rand.String(7)+".tmp")
+	f, err := os.OpenFile(tmp, os.O_RDWR|os.O_CREATE|os.O_EXCL, 0600)
 	if nil != err {
 		return err
 	}
@@ -60,7 +61,8 @@ func (GuluFile) WriteFileSafer(writePath string, data []byte, perm os.FileMode) 
 	// credits: https://github.com/vitessio/vitess/blob/master/go/ioutil2/ioutil.go
 
 	dir, name := filepath.Split(writePath)
-	f, err := ioutil.TempFile(dir, name+"*.tmp")
+	tmp := filepath.Join(dir, name+Rand.String(7)+".tmp")
+	f, err := os.OpenFile(tmp, os.O_RDWR|os.O_CREATE|os.O_EXCL, 0600)
 	if nil != err {
 		return err
 	}
