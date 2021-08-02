@@ -24,7 +24,7 @@ import (
 func (GuluFile) WriteFileSaferByHandle(handle *os.File, data []byte) error {
 	writePath := handle.Name()
 	dir, name := filepath.Split(writePath)
-	f, err := ioutil.TempFile(dir, name)
+	f, err := ioutil.TempFile(dir, name+"*.tmp")
 	if nil != err {
 		return err
 	}
@@ -60,7 +60,7 @@ func (GuluFile) WriteFileSafer(writePath string, data []byte, perm os.FileMode) 
 	// credits: https://github.com/vitessio/vitess/blob/master/go/ioutil2/ioutil.go
 
 	dir, name := filepath.Split(writePath)
-	f, err := ioutil.TempFile(dir, name)
+	f, err := ioutil.TempFile(dir, name+"*.tmp")
 	if nil != err {
 		return err
 	}
