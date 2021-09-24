@@ -29,3 +29,15 @@ func TestIsLetter(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestContainsChinese(t *testing.T) {
+	if !Rune.ContainChinese("Hello 世界") {
+		t.Fail()
+	}
+	if Rune.ContainChinese("Hello World") {
+		t.Fail()
+	}
+	if Rune.ContainChinese("Hello，World") {
+		t.Fail()
+	}
+}

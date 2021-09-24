@@ -10,6 +10,8 @@
 
 package gulu
 
+import "unicode"
+
 // IsNumOrLetter checks the specified rune is number or letter.
 func (*GuluRune) IsNumOrLetter(r rune) bool {
 	return ('0' <= r && '9' >= r) || Rune.IsLetter(r)
@@ -18,4 +20,16 @@ func (*GuluRune) IsNumOrLetter(r rune) bool {
 // IsLetter checks the specified rune is letter.
 func (*GuluRune) IsLetter(r rune) bool {
 	return 'a' <= r && 'z' >= r || 'A' <= r && 'Z' >= r
+}
+
+// ContainChinese checks the specified string whether contains chinese.
+func (*GuluRune) ContainChinese(str string) bool {
+	var count int
+	for _, v := range str {
+		if unicode.Is(unicode.Han, v) {
+			count++
+			break
+		}
+	}
+	return count > 0
 }

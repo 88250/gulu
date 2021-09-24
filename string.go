@@ -22,7 +22,7 @@ func (*GuluStr) FromBytes(bytes []byte) string {
 	return *(*string)(unsafe.Pointer(&bytes))
 }
 
-// Bytes converts the specified str to a byte array.
+// ToBytes converts the specified str to a byte array.
 func (*GuluStr) ToBytes(str string) []byte {
 	x := (*[2]uintptr)(unsafe.Pointer(&str))
 	h := [3]uintptr{x[0], x[1], x[1]}
