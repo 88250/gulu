@@ -161,13 +161,13 @@ func cloneZipItem(f *zip.File, dest string) error {
 
 	path := filepath.Join(dest, fileName)
 
-	err := os.MkdirAll(filepath.Dir(path), os.ModeDir|os.ModePerm)
+	err := os.MkdirAll(filepath.Dir(path), 0755)
 	if nil != err {
 		return err
 	}
 
 	if f.FileInfo().IsDir() {
-		err = os.Mkdir(path, os.ModeDir|os.ModePerm)
+		err = os.Mkdir(path, 0755)
 		if nil != err {
 			return err
 		}
