@@ -35,17 +35,14 @@ func (*GuluZip) Create(filename string) (*ZipFile, error) {
 	if nil != err {
 		return nil, err
 	}
-
 	return &ZipFile{zipFile: file, writer: zip.NewWriter(file)}, nil
 }
 
 // Close closes the zip file writer.
 func (z *ZipFile) Close() error {
-	err := z.writer.Close()
-	if nil != err {
+	if err := z.writer.Close(); nil != err {
 		return err
 	}
-
 	return z.zipFile.Close() // close the underlying writer
 }
 
@@ -53,8 +50,7 @@ func (z *ZipFile) Close() error {
 func (z *ZipFile) AddEntryN(path string, names ...string) error {
 	for _, name := range names {
 		zipPath := filepath.Join(path, name)
-		err := z.AddEntry(zipPath, name)
-		if nil != err {
+		if err := z.AddEntry(zipPath, name); nil != err {
 			return err
 		}
 	}
@@ -96,7 +92,6 @@ func (z *ZipFile) AddEntry(path, name string) error {
 	defer file.Close()
 
 	_, err = io.Copy(entry, file)
-
 	return err
 }
 
@@ -119,11 +114,10 @@ func (z *ZipFile) AddDirectory(path, dirName string) error {
 	}
 
 	if 0 == len(files) {
-		err := z.AddEntry(path, dirName)
+		err = z.AddEntry(path, dirName)
 		if nil != err {
 			return err
 		}
-
 		return nil
 	}
 
@@ -142,7 +136,6 @@ func (z *ZipFile) AddDirectory(path, dirName string) error {
 			return err
 		}
 	}
-
 	return nil
 }
 
@@ -167,11 +160,9 @@ func cloneZipItem(f *zip.File, dest string) error {
 	}
 
 	if f.FileInfo().IsDir() {
-		err = os.Mkdir(path, 0755)
-		if nil != err {
+		if err = os.MkdirAll(path, 0755); nil != err {
 			return err
 		}
-
 		return nil
 	}
 
@@ -189,14 +180,12 @@ func cloneZipItem(f *zip.File, dest string) error {
 	if nil != err {
 		return err
 	}
-
 	defer fileCopy.Close()
 
 	_, err = io.Copy(fileCopy, rc)
 	if nil != err {
 		return err
 	}
-
 	return nil
 }
 
@@ -207,7 +196,6 @@ func (*GuluZip) Unzip(zipFilePath, destination string) error {
 	if nil != err {
 		return err
 	}
-
 	defer r.Close()
 
 	for _, f := range r.File {
@@ -216,6 +204,5 @@ func (*GuluZip) Unzip(zipFilePath, destination string) error {
 			return err
 		}
 	}
-
 	return nil
 }
