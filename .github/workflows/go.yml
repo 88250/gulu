@@ -1,27 +1,25 @@
-name: Go
-on: [push]
+name: Go Test
+on: [ push, pull_request ]
 jobs:
-
-  build:
-    name: Build
+  test:
+    name: Test with Coverage
     runs-on: ubuntu-latest
     steps:
-
-    - name: Set up Go 1.16
-      uses: actions/setup-go@v1
-      with:
-        go-version: 1.16
-      id: go
-
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v2
-
-    - name: Get dependencies
-      run: |
-        go get -v -t -d ./...
-
-    - name: Build
-      run: go build -v .
-
-    - name: Test
-      run: go test -v
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.17'
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          go mod download
+      - name: Run Unit tests
+        run: |
+          go test -coverprofile=covprofile -coverpkg="github.com/88250/gulu" ./...
+      - name: Install goveralls
+        run: go install github.com/mattn/goveralls@latest
+      - name: Send coverage
+        env:
+          COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: goveralls -coverprofile=covprofile -service=github
