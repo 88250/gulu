@@ -14,9 +14,18 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 )
+
+func TestWriteFileSaferByReader(t *testing.T) {
+	writePath := "testdata/filewrite.go"
+	defer os.RemoveAll(writePath)
+	if err := File.WriteFileSaferByReader(writePath, strings.NewReader("test"), 0644); nil != err {
+		t.Errorf("write file [%s] failed: %s", writePath, err)
+	}
+}
 
 func TestWriteFileSafer(t *testing.T) {
 	writePath := "testdata/filewrite.go"
