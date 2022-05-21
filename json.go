@@ -10,19 +10,18 @@
 
 package gulu
 
-import jsoniter "github.com/json-iterator/go"
+import (
+	"encoding/json"
+)
 
 func (*GuluJSON) UnmarshalJSON(data []byte, v interface{}) error {
-	json := jsoniter.ConfigCompatibleWithStandardLibrary
 	return json.Unmarshal(data, v)
 }
 
 func (*GuluJSON) MarshalJSON(v interface{}) ([]byte, error) {
-	json := jsoniter.ConfigCompatibleWithStandardLibrary
 	return json.Marshal(v)
 }
 
 func (*GuluJSON) MarshalIndentJSON(v interface{}, prefix, indent string) ([]byte, error) {
-	json := jsoniter.ConfigCompatibleWithStandardLibrary
 	return json.MarshalIndent(v, prefix, indent)
 }
