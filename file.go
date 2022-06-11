@@ -18,6 +18,16 @@ import (
 	"time"
 )
 
+func (GuluFile) IsValidFilename(name string) bool {
+	reserved := []string{"\\", "/", ":", "*", "?", "\"", "'", "<", ">", "|"}
+	for _, r := range reserved {
+		if strings.Contains(name, r) {
+			return false
+		}
+	}
+	return true
+}
+
 // WriteFileSaferByHandle writes the data to a temp file and writes the original file if everything else succeeds.
 // Note: This function does not close the file handle after writing data.
 func (GuluFile) WriteFileSaferByHandle(handle *os.File, data []byte) error {

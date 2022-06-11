@@ -19,15 +19,15 @@ import (
 )
 
 // RemoveInvisible removes invisible characters from string str.
-func RemoveInvisible(str string) string {
+func (gs *GuluStr) RemoveInvisible(str string) string {
 	str = strings.ReplaceAll(str, "\u00A0", " ") // NBSP 转换为普通空格
-	str = RemoveZeroWidthCharacters(str)
-	str = RemoveCtl(str)
+	str = gs.RemoveZeroWidthCharacters(str)
+	str = gs.RemoveCtl(str)
 	return str
 }
 
 // RemoveCtl removes all control characters from string str.
-func RemoveCtl(str string) string {
+func (*GuluStr) RemoveCtl(str string) string {
 	return strings.Map(func(r rune) rune {
 		if r >= 32 && r != 127 {
 			return r
@@ -58,7 +58,7 @@ var replacer = strings.NewReplacer(string(ZWSP), empty,
 	string(ZWNJ), empty)
 
 // HasZeroWidthCharacters reports whether string s contains zero-width characters.
-func HasZeroWidthCharacters(s string) bool {
+func (*GuluStr) HasZeroWidthCharacters(s string) bool {
 	return strings.ContainsRune(s, ZWSP) ||
 		strings.ContainsRune(s, ZWNBSP) ||
 		strings.ContainsRune(s, ZWJ) ||
@@ -66,31 +66,31 @@ func HasZeroWidthCharacters(s string) bool {
 }
 
 // RemoveZeroWidthCharacters removes all zero-width characters from string s.
-func RemoveZeroWidthCharacters(s string) string {
+func (*GuluStr) RemoveZeroWidthCharacters(s string) string {
 	return replacer.Replace(s)
 }
 
 // RemoveZeroWidthSpace removes zero-width space characters from string s.
-func RemoveZeroWidthSpace(s string) string {
+func (*GuluStr) RemoveZeroWidthSpace(s string) string {
 	return strings.Replace(s, string(ZWSP), empty, -1)
 }
 
 // RemoveZeroWidthNoBreakSpace removes zero-width no-break space characters from string s.
-func RemoveZeroWidthNoBreakSpace(s string) string {
+func (*GuluStr) RemoveZeroWidthNoBreakSpace(s string) string {
 	return strings.Replace(s, string(ZWNBSP), empty, -1)
 }
 
 // RemoveZeroWidthJoiner removes zero-width joiner characters from string s.
-func RemoveZeroWidthJoiner(s string) string {
+func (*GuluStr) RemoveZeroWidthJoiner(s string) string {
 	return strings.Replace(s, string(ZWJ), empty, -1)
 }
 
 // RemoveZeroWidthNonJoiner removes zero-width non-joiner characters from string s.
-func RemoveZeroWidthNonJoiner(s string) string {
+func (*GuluStr) RemoveZeroWidthNonJoiner(s string) string {
 	return strings.Replace(s, string(ZWNJ), empty, -1)
 }
 
-func IsASCII(s string) bool {
+func (*GuluStr) IsASCII(s string) bool {
 	for i := 0; i < len(s); i++ {
 		if s[i] > unicode.MaxASCII {
 			return false
@@ -100,7 +100,7 @@ func IsASCII(s string) bool {
 }
 
 // SubstringsBetween returns a slice of sub strings between the start and end.
-func SubstringsBetween(str, start, end string) (ret []string) {
+func (*GuluStr) SubstringsBetween(str, start, end string) (ret []string) {
 	parts := strings.Split(str, start)
 	for _, p := range parts {
 		if !strings.Contains(p, end) {

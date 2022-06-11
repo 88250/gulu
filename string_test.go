@@ -10,7 +10,38 @@
 
 package gulu
 
-import "testing"
+import (
+	"testing"
+)
+
+func TestSubstringsBetween(t *testing.T) {
+	got := Str.SubstringsBetween("foo<bar>baz<bar2>", "<", ">")
+	if 2 != len(got) {
+		t.Errorf("substrings between [%s] should have 2 elements", got)
+		return
+	}
+}
+
+func TestIsASCII(t *testing.T) {
+	if !Str.IsASCII("foo") {
+		t.Error("[foo] should be ASCII")
+		return
+	}
+
+	if Str.IsASCII("foo测试") {
+		t.Error("[foo测试] should not be ASCII")
+		return
+	}
+}
+
+func TestRemoveInvisible(t *testing.T) {
+	expected := "foo测试barbaz"
+	got := Str.RemoveInvisible("foo\u200b测试\nbar\tbaz")
+	if expected != got {
+		t.Errorf("expected [%s], got [%s]", expected, got)
+		return
+	}
+}
 
 func TestToBytes(t *testing.T) {
 	str := "Gulu 你好！"

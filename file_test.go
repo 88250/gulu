@@ -19,6 +19,15 @@ import (
 	"time"
 )
 
+func TestIsValidFilename(t *testing.T) {
+	if !File.IsValidFilename("hello.go") {
+		t.Errorf("[hello.go] should be a valid filename")
+	}
+	if File.IsValidFilename("hello?.go") {
+		t.Errorf("[hello?.go] should not be a valid filename")
+	}
+}
+
 func TestWriteFileSaferByReader(t *testing.T) {
 	writePath := "testdata/filewrite.go"
 	defer os.RemoveAll(writePath)
