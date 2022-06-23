@@ -14,6 +14,47 @@ import (
 	"testing"
 )
 
+func TestEqual(t *testing.T) {
+	if !Str.Equal([]string{"foo", "bar"}, []string{"foo", "bar"}) {
+		t.Error("[\"foo\", \"bar\"] and [\"foo\", \"bar\"] should be equal")
+		return
+	}
+
+	if Str.Equal([]string{"foo", "bar"}, []string{"foo", "bar", "baz"}) {
+		t.Error("[\"foo\", \"bar\"] and [\"foo\", \"bar\", \"baz\"] should not be equal")
+		return
+	}
+
+	if Str.Equal([]string{"foo", "bar"}, []string{"bar", "foo"}) {
+		t.Error("[\"foo\", \"bar\"] and [\"bar\", \"foo\"] should not be equal")
+		return
+	}
+}
+
+func TestRemoveDuplicatedElem(t *testing.T) {
+	expected := []string{"foo", "bar", "baz"}
+	got := Str.RemoveDuplicatedElem([]string{"foo", "bar", "bar", "baz", "baz"})
+	if !Str.Equal(expected, got) {
+		t.Errorf("expected is %v, but got is %v", expected, got)
+	}
+}
+
+func TestExcludeElem(t *testing.T) {
+	got := Str.ExcludeElem([]string{"foo", "bar", "baz"}, []string{"bar", "baz"})
+	if 1 != len(got) || "foo" != got[0] {
+		t.Errorf("expected [foo], got [%s]", got)
+		return
+	}
+}
+
+func TestRemoveElem(t *testing.T) {
+	got := Str.RemoveElem([]string{"foo", "bar", "baz"}, "bar")
+	if 2 != len(got) || "foo" != got[0] || "baz" != got[1] {
+		t.Errorf("expected [foo, baz], got [%s]", got)
+		return
+	}
+}
+
 func TestSubstringsBetween(t *testing.T) {
 	got := Str.SubstringsBetween("foo<bar>baz<bar2>", "<", ">")
 	if 2 != len(got) {

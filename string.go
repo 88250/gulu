@@ -18,6 +18,53 @@ import (
 	"unsafe"
 )
 
+// Equal determines whether the str is equal to the strs.
+func (gs *GuluStr) Equal(slice1 []string, slice2 []string) bool {
+	if len(slice1) != len(slice2) {
+		return false
+	}
+
+	for i, v := range slice1 {
+		if v != slice2[i] {
+			return false
+		}
+	}
+	return true
+}
+
+// RemoveDuplicatedElem removes the duplicated elements from the slice.
+func (gs *GuluStr) RemoveDuplicatedElem(slice []string) (ret []string) {
+	allKeys := make(map[string]bool)
+	for _, item := range slice {
+		if _, value := allKeys[item]; !value {
+			allKeys[item] = true
+			ret = append(ret, item)
+		}
+	}
+	return
+}
+
+// ExcludeElem excludes the specified elements from the slice.
+func (gs *GuluStr) ExcludeElem(slice, excludes []string) (ret []string) {
+	ret = []string{}
+	for _, e := range slice {
+		if !gs.Contains(e, excludes) {
+			ret = append(ret, e)
+		}
+	}
+	return
+}
+
+// RemoveElem removes the specified element from the slice.
+func (gs *GuluStr) RemoveElem(slice []string, elem string) (ret []string) {
+	for _, e := range slice {
+		if e != elem {
+			ret = append(ret, e)
+		}
+	}
+	return
+}
+
 // RemoveInvisible removes invisible characters from string str.
 func (gs *GuluStr) RemoveInvisible(str string) string {
 	str = strings.ReplaceAll(str, "\u00A0", " ") // NBSP 转换为普通空格
