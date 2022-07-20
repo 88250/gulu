@@ -30,7 +30,7 @@ func (GuluFile) IsValidFilename(name string) bool {
 
 // WriteFileSaferByHandle writes the data to a temp file and writes the original file if everything else succeeds.
 // Note: This function does not close the file handle after writing data.
-func (GuluFile) WriteFileSaferByHandle(handle *os.File, data []byte) error {
+func (GuluFile) WriteFileSaferByHandle(handle *os.File, data []byte) (err error) {
 	writePath := handle.Name()
 	dir, name := filepath.Split(writePath)
 
@@ -40,123 +40,100 @@ func (GuluFile) WriteFileSaferByHandle(handle *os.File, data []byte) error {
 		return err
 	}
 
-	if _, err = f.Write(data); nil == err {
-		err = f.Sync()
+	if _, err = f.Write(data); nil != err {
+		return
 	}
 
-	if closeErr := f.Close(); nil == err {
-		err = closeErr
+	if err = f.Close(); nil != err {
+		return
 	}
 
-	if nil == err {
-		err = handle.Truncate(0)
+	if err = handle.Truncate(0); nil != err {
+		return
 	}
 
-	if nil == err {
-		_, err = handle.WriteAt(data, 0)
+	if _, err = handle.WriteAt(data, 0); nil != err {
+		return
 	}
 
-	if nil == err {
-		err = handle.Sync()
-	}
-
-	if nil == err {
-		os.Remove(f.Name())
-	}
-	return err
+	os.Remove(f.Name())
+	return
 }
 
 // WriteFileSaferByReader writes the data to a temp file and atomically move if everything else succeeds.
-func (GuluFile) WriteFileSaferByReader(writePath string, reader io.Reader, perm os.FileMode) error {
+func (GuluFile) WriteFileSaferByReader(writePath string, reader io.Reader, perm os.FileMode) (err error) {
 	dir, name := filepath.Split(writePath)
 	tmp := filepath.Join(dir, name+Rand.String(7)+".tmp")
 	f, err := os.OpenFile(tmp, os.O_RDWR|os.O_CREATE|os.O_EXCL, 0600)
 	if nil != err {
-		return err
+		return
 	}
 
-	if _, err = io.Copy(f, reader); nil == err {
-		err = f.Sync()
+	if _, err = io.Copy(f, reader); nil != err {
+		return
 	}
 
-	if closeErr := f.Close(); nil == err {
-		err = closeErr
+	if err = f.Close(); nil != err {
+		return
 	}
 
-	if permErr := os.Chmod(f.Name(), perm); nil == err {
-		err = permErr
+	if err = os.Chmod(f.Name(), perm); nil != err {
+		return
 	}
 
-	if nil == err {
-		for i := 0; i < 3; i++ {
-			err = os.Rename(f.Name(), writePath) // Windows 上重命名是非原子的
-			if nil == err {
-				break
-			}
-
-			if errMsg := strings.ToLower(err.Error()); strings.Contains(errMsg, "access is denied") || strings.Contains(errMsg, "used by another process") { // 文件可能是被锁定
-				time.Sleep(100 * time.Millisecond)
-				continue
-			}
-			break
+	for i := 0; i < 3; i++ {
+		err = os.Rename(f.Name(), writePath) // Windows 上重命名是非原子的
+		if nil == err {
+			os.Remove(f.Name())
+			return
 		}
-	}
 
-	if nil != err {
-		os.Remove(f.Name())
+		if errMsg := strings.ToLower(err.Error()); strings.Contains(errMsg, "access is denied") || strings.Contains(errMsg, "used by another process") { // 文件可能是被锁定
+			time.Sleep(100 * time.Millisecond)
+			continue
+		}
+		break
 	}
-	return err
+	return
 }
 
 // WriteFileSafer writes the data to a temp file and atomically move if everything else succeeds.
-func (GuluFile) WriteFileSafer(writePath string, data []byte, perm os.FileMode) error {
+func (GuluFile) WriteFileSafer(writePath string, data []byte, perm os.FileMode) (err error) {
 	// credits: https://github.com/vitessio/vitess/blob/master/go/ioutil2/ioutil.go
 
 	dir, name := filepath.Split(writePath)
 	tmp := filepath.Join(dir, name+Rand.String(7)+".tmp")
 	f, err := os.OpenFile(tmp, os.O_RDWR|os.O_CREATE|os.O_EXCL, 0600)
 	if nil != err {
-		return err
+		return
 	}
 
-	if _, err = f.Write(data); nil == err {
-		err = f.Sync()
+	if _, err = f.Write(data); nil != err {
+		return
 	}
 
-	if closeErr := f.Close(); nil == err {
-		err = closeErr
+	if err = f.Close(); nil != err {
+		return
 	}
 
-	if permErr := os.Chmod(f.Name(), perm); nil == err {
-		err = permErr
+	if err = os.Chmod(f.Name(), perm); nil != err {
+		return
 	}
 
-	if nil == err {
-		var renamed bool
-		for i := 0; i < 3; i++ {
-			err = os.Rename(f.Name(), writePath) // Windows 上重命名是非原子的
-			if nil == err {
-				renamed = true
-				break
-			}
-
-			if errMsg := strings.ToLower(err.Error()); strings.Contains(errMsg, "access is denied") || strings.Contains(errMsg, "used by another process") { // 文件可能是被锁定
-				time.Sleep(100 * time.Millisecond)
-				continue
-			}
-			break
+	for i := 0; i < 3; i++ {
+		err = os.Rename(f.Name(), writePath) // Windows 上重命名是非原子的
+		if nil == err {
+			os.Remove(f.Name())
+			return
 		}
 
-		if !renamed {
-			// 直接写入
-			err = os.WriteFile(writePath, data, perm)
+		if errMsg := strings.ToLower(err.Error()); strings.Contains(errMsg, "access is denied") || strings.Contains(errMsg, "used by another process") { // 文件可能是被锁定
+			time.Sleep(100 * time.Millisecond)
+			continue
 		}
+		break
 	}
-
-	if nil != err {
-		os.Remove(f.Name())
-	}
-	return err
+	return
 }
 
 // GetFileSize get the length in bytes of file of the specified path.
