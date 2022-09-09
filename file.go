@@ -18,7 +18,7 @@ import (
 	"time"
 )
 
-func RemoveEmptyDirs(dir string) (err error) {
+func (GuluFile) RemoveEmptyDirs(dir string) (err error) {
 	_, err = removeEmptyDirs(dir, true)
 	return
 }
