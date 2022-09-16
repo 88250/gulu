@@ -85,6 +85,10 @@ func (GuluFile) WriteFileSaferByHandle(handle *os.File, data []byte) (err error)
 		return
 	}
 
+	if err = f.Sync(); nil != err {
+		return
+	}
+
 	if err = f.Close(); nil != err {
 		return
 	}
@@ -111,6 +115,10 @@ func (GuluFile) WriteFileSaferByReader(writePath string, reader io.Reader, perm 
 	}
 
 	if _, err = io.Copy(f, reader); nil != err {
+		return
+	}
+
+	if err = f.Sync(); nil != err {
 		return
 	}
 
@@ -150,6 +158,10 @@ func (GuluFile) WriteFileSafer(writePath string, data []byte, perm os.FileMode) 
 	}
 
 	if _, err = f.Write(data); nil != err {
+		return
+	}
+
+	if err = f.Sync(); nil != err {
 		return
 	}
 
