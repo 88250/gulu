@@ -68,6 +68,12 @@ func TestWriteFileSaferWithoutChangeTime(t *testing.T) {
 	if err = File.WriteFileSaferWithoutChangeTime(writePath1, []byte("test"), 0644); nil != err {
 		t.Errorf("write file [%s] failed: %s", writePath, err)
 	}
+	info, err = os.Stat(writePath1)
+	if nil != err {
+		t.Fatalf("stat file [%s] failed: %s", writePath1, err)
+	}
+	modTime3 := info.ModTime()
+	t.Logf("file mod time [%v]", modTime3)
 }
 
 func TestWriteFileSafer(t *testing.T) {
