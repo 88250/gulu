@@ -50,7 +50,7 @@ func TestWriteFileSaferWithoutChangeTime(t *testing.T) {
 	}
 	modTime1 := info.ModTime()
 
-	if err := File.WriteFileSaferWithoutChangeTime(writePath, []byte("test"), 0644); nil != err {
+	if err = File.WriteFileSaferWithoutChangeTime(writePath, []byte("test"), 0644); nil != err {
 		t.Errorf("write file [%s] failed: %s", writePath, err)
 	}
 
@@ -61,6 +61,12 @@ func TestWriteFileSaferWithoutChangeTime(t *testing.T) {
 	modTime2 := info.ModTime()
 	if modTime1 != modTime2 {
 		t.Errorf("mod time should not be changed")
+	}
+
+	writePath1 := "testdata/filewrite1.go"
+	defer os.RemoveAll(writePath1)
+	if err = File.WriteFileSaferWithoutChangeTime(writePath1, []byte("test"), 0644); nil != err {
+		t.Errorf("write file [%s] failed: %s", writePath, err)
 	}
 }
 
@@ -78,7 +84,7 @@ func TestWriteFileSafer(t *testing.T) {
 	}
 	modTime1 := info.ModTime()
 
-	if err := File.WriteFileSafer(writePath, []byte("test"), 0644); nil != err {
+	if err = File.WriteFileSafer(writePath, []byte("test"), 0644); nil != err {
 		t.Errorf("write file [%s] failed: %s", writePath, err)
 	}
 
