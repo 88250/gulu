@@ -36,11 +36,59 @@ func TestWriteFileSaferByReader(t *testing.T) {
 	}
 }
 
+func TestWriteFileSaferWithoutChangeTime(t *testing.T) {
+	writePath := "testdata/filewrite.go"
+	defer os.RemoveAll(writePath)
+
+	if err := os.WriteFile(writePath, []byte("0"), 0644); nil != err {
+		t.Fatalf("write file [%s] failed: %s", writePath, err)
+	}
+
+	info, err := os.Stat(writePath)
+	if nil != err {
+		t.Fatalf("stat file [%s] failed: %s", writePath, err)
+	}
+	modTime1 := info.ModTime()
+
+	if err := File.WriteFileSaferWithoutChangeTime(writePath, []byte("test"), 0644); nil != err {
+		t.Errorf("write file [%s] failed: %s", writePath, err)
+	}
+
+	info, err = os.Stat(writePath)
+	if nil != err {
+		t.Fatalf("stat file [%s] failed: %s", writePath, err)
+	}
+	modTime2 := info.ModTime()
+	if modTime1 != modTime2 {
+		t.Errorf("mod time should not be changed")
+	}
+}
+
 func TestWriteFileSafer(t *testing.T) {
 	writePath := "testdata/filewrite.go"
 	defer os.RemoveAll(writePath)
+
+	if err := os.WriteFile(writePath, []byte("0"), 0644); nil != err {
+		t.Fatalf("write file [%s] failed: %s", writePath, err)
+	}
+
+	info, err := os.Stat(writePath)
+	if nil != err {
+		t.Fatalf("stat file [%s] failed: %s", writePath, err)
+	}
+	modTime1 := info.ModTime()
+
 	if err := File.WriteFileSafer(writePath, []byte("test"), 0644); nil != err {
 		t.Errorf("write file [%s] failed: %s", writePath, err)
+	}
+
+	info, err = os.Stat(writePath)
+	if nil != err {
+		t.Fatalf("stat file [%s] failed: %s", writePath, err)
+	}
+	modTime2 := info.ModTime()
+	if modTime1 == modTime2 {
+		t.Errorf("mod time should not be changed")
 	}
 }
 
