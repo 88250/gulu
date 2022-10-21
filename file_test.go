@@ -19,6 +19,70 @@ import (
 	"time"
 )
 
+func TestRemoveEmptyDirs(t *testing.T) {
+	testPath := "testdata/dir"
+
+	// case 1
+	if err := os.RemoveAll(testPath); nil != err {
+		t.Errorf("clear test empty dir [%s] failed: %s", testPath, err)
+	}
+
+	a := filepath.Join(testPath, "a")
+	if err := os.MkdirAll(a, 0755); nil != err {
+		t.Errorf("make dir [%s] failed: %s", testPath, err)
+	}
+
+	if err := File.RemoveEmptyDirs(testPath); nil != err {
+		t.Errorf("remove empty dirs failed: %s", err)
+	}
+
+	if File.IsDir(a) || File.IsDir(testPath) {
+		t.Errorf("empty dir [%s] exists", a)
+	}
+
+	// case 2
+	if err := os.RemoveAll(testPath); nil != err {
+		t.Errorf("clear test empty dir [%s] failed: %s", testPath, err)
+	}
+
+	if err := os.MkdirAll(a, 0755); nil != err {
+		t.Errorf("make dir [%s] failed: %s", testPath, err)
+	}
+	test := filepath.Join(a, "test")
+	if err := os.WriteFile(test, []byte(""), 0644); nil != err {
+		t.Errorf("write file [%s] failed: %s", test, err)
+	}
+
+	if err := File.RemoveEmptyDirs(testPath); nil != err {
+		t.Errorf("remove empty dirs failed: %s", err)
+	}
+
+	if !File.IsDir(a) || !File.IsDir(testPath) {
+		t.Errorf("empty dir [%s] exists", a)
+	}
+
+	// case 3
+	if err := os.RemoveAll(testPath); nil != err {
+		t.Errorf("clear test empty dir [%s] failed: %s", testPath, err)
+	}
+
+	if err := os.MkdirAll(a, 0755); nil != err {
+		t.Errorf("make dir [%s] failed: %s", testPath, err)
+	}
+
+	if err := File.RemoveEmptyDirs(testPath, "a"); nil != err {
+		t.Errorf("remove empty dirs failed: %s", err)
+	}
+
+	if !File.IsDir(a) || !File.IsDir(testPath) {
+		t.Errorf("empty dir [%s] exists", a)
+	}
+
+	if err := os.RemoveAll(testPath); nil != err {
+		t.Errorf("clear test empty dir [%s] failed: %s", testPath, err)
+	}
+}
+
 func TestIsValidFilename(t *testing.T) {
 	if !File.IsValidFilename("hello.go") {
 		t.Errorf("[hello.go] should be a valid filename")

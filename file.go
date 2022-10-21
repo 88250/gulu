@@ -18,17 +18,17 @@ import (
 	"time"
 )
 
-func (GuluFile) RemoveEmptyDirs(dir string) (err error) {
-	_, err = removeEmptyDirs(dir, true)
+// RemoveEmptyDirs removes all empty dirs under the specified dir path.
+func (GuluFile) RemoveEmptyDirs(dir string, excludes ...string) (err error) {
+	_, err = removeEmptyDirs(dir, excludes...)
 	return
 }
 
-func removeEmptyDirs(dir string, removeSelf bool) (bool, error) {
+func removeEmptyDirs(dir string, excludes ...string) (removed bool, err error) {
 	// Credit to: https://github.com/InfuseAI/ArtiVC/blob/main/internal/core/utils.go
 	// LICENSE Apache License 2.0 https://github.com/InfuseAI/ArtiVC/blob/main/LICENSE
 
 	var hasEntries bool
-
 	entires, err := os.ReadDir(dir)
 	if err != nil {
 		return false, err
@@ -36,7 +36,7 @@ func removeEmptyDirs(dir string, removeSelf bool) (bool, error) {
 	for _, entry := range entires {
 		if entry.IsDir() {
 			subdir := filepath.Join(dir, entry.Name())
-			removed, err := removeEmptyDirs(subdir, true)
+			removed, err = removeEmptyDirs(subdir, excludes...)
 			if err != nil {
 				return false, err
 			}
@@ -48,14 +48,13 @@ func removeEmptyDirs(dir string, removeSelf bool) (bool, error) {
 		}
 	}
 
-	if !hasEntries && removeSelf {
-		err := os.Remove(dir)
+	if !hasEntries && !Str.Contains(filepath.Base(dir), excludes) {
+		err = os.Remove(dir)
 		if err != nil {
 			return false, err
 		}
 		return true, nil
 	}
-
 	return false, nil
 }
 
