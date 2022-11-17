@@ -28,6 +28,11 @@ func removeEmptyDirs(dir string, excludes ...string) (removed bool, err error) {
 	// Credit to: https://github.com/InfuseAI/ArtiVC/blob/main/internal/core/utils.go
 	// LICENSE Apache License 2.0 https://github.com/InfuseAI/ArtiVC/blob/main/LICENSE
 
+	dirName := filepath.Base(dir)
+	if Str.Contains(dirName, excludes) {
+		return
+	}
+
 	var hasEntries bool
 	entires, err := os.ReadDir(dir)
 	if err != nil {
@@ -48,8 +53,7 @@ func removeEmptyDirs(dir string, excludes ...string) (removed bool, err error) {
 		}
 	}
 
-	dirName := filepath.Base(dir)
-	if !hasEntries && !Str.Contains(dirName, excludes) && !strings.HasPrefix(dirName, ".") {
+	if !hasEntries && !Str.Contains(dirName, excludes) {
 		err = os.Remove(dir)
 		if err != nil {
 			return false, err
