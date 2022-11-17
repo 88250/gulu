@@ -48,7 +48,8 @@ func removeEmptyDirs(dir string, excludes ...string) (removed bool, err error) {
 		}
 	}
 
-	if !hasEntries && !Str.Contains(filepath.Base(dir), excludes) {
+	dirName := filepath.Base(dir)
+	if !hasEntries && !Str.Contains(dirName, excludes) && !strings.HasPrefix(dirName, ".") {
 		err = os.Remove(dir)
 		if err != nil {
 			return false, err
