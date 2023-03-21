@@ -138,6 +138,9 @@ func TestWriteFileSaferWithoutChangeTime(t *testing.T) {
 	}
 	modTime3 := info.ModTime()
 	t.Logf("file mod time [%v]", modTime3)
+	if modTime2 == modTime3 {
+		t.Errorf("mod time should not be changed")
+	}
 }
 
 func TestWriteFileSafer(t *testing.T) {
@@ -152,7 +155,6 @@ func TestWriteFileSafer(t *testing.T) {
 	if nil != err {
 		t.Fatalf("stat file [%s] failed: %s", writePath, err)
 	}
-	modTime1 := info.ModTime()
 
 	if err = File.WriteFileSafer(writePath, []byte("test"), 0644); nil != err {
 		t.Errorf("write file [%s] failed: %s", writePath, err)
@@ -163,9 +165,7 @@ func TestWriteFileSafer(t *testing.T) {
 		t.Fatalf("stat file [%s] failed: %s", writePath, err)
 	}
 	modTime2 := info.ModTime()
-	if modTime1 == modTime2 {
-		t.Errorf("mod time should not be changed")
-	}
+	t.Logf("file mod time [%v]", modTime2)
 }
 
 func TestIsHidden(t *testing.T) {
