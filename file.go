@@ -103,8 +103,6 @@ func (GuluFile) WriteFileSaferByHandle(handle *os.File, data []byte) (err error)
 	if _, err = handle.WriteAt(data, 0); nil != err {
 		return
 	}
-
-	os.Remove(f.Name())
 	return
 }
 
@@ -136,8 +134,6 @@ func (GuluFile) WriteFileSaferByReader(writePath string, reader io.Reader, perm 
 	if err = os.Rename(f.Name(), writePath); nil != err {
 		return
 	}
-
-	err = os.Remove(f.Name())
 	return
 }
 
@@ -178,8 +174,6 @@ func (GuluFile) WriteFileSaferWithoutChangeTime(writePath string, data []byte, p
 	if err = os.Rename(f.Name(), writePath); nil != err {
 		return
 	}
-
-	err = os.Remove(f.Name())
 	return
 }
 
