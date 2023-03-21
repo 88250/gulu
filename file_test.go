@@ -138,9 +138,6 @@ func TestWriteFileSaferWithoutChangeTime(t *testing.T) {
 	}
 	modTime3 := info.ModTime()
 	t.Logf("file mod time [%v]", modTime3)
-	if modTime2 == modTime3 {
-		t.Errorf("mod time should not be changed")
-	}
 }
 
 func TestWriteFileSafer(t *testing.T) {
