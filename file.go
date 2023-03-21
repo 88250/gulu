@@ -205,8 +205,6 @@ func (GuluFile) WriteFileSafer(writePath string, data []byte, perm os.FileMode) 
 	if err = os.Rename(f.Name(), writePath); nil != err {
 		return
 	}
-
-	err = os.Remove(f.Name())
 	return
 }
 
