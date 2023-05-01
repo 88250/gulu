@@ -15,6 +15,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 // RemoveEmptyDirs removes all empty dirs under the specified dir path.
@@ -72,40 +73,6 @@ func (GuluFile) IsValidFilename(name string) bool {
 	return true
 }
 
-// WriteFileSaferByHandle writes the data to a temp file and writes the original file if everything else succeeds.
-// Note: This function does not close the file handle after writing data.
-func (GuluFile) WriteFileSaferByHandle(handle *os.File, data []byte) (err error) {
-	writePath := handle.Name()
-	dir, name := filepath.Split(writePath)
-
-	tmp := filepath.Join(dir, name+Rand.String(7)+".tmp")
-	f, err := os.OpenFile(tmp, os.O_RDWR|os.O_CREATE|os.O_EXCL, 0600)
-	if nil != err {
-		return err
-	}
-
-	if _, err = f.Write(data); nil != err {
-		return
-	}
-
-	if err = f.Sync(); nil != err {
-		return
-	}
-
-	if err = f.Close(); nil != err {
-		return
-	}
-
-	if err = handle.Truncate(0); nil != err {
-		return
-	}
-
-	if _, err = handle.WriteAt(data, 0); nil != err {
-		return
-	}
-	return
-}
-
 // WriteFileSaferByReader writes the data to a temp file and atomically move if everything else succeeds.
 func (GuluFile) WriteFileSaferByReader(writePath string, reader io.Reader, perm os.FileMode) (err error) {
 	dir, name := filepath.Split(writePath)
@@ -131,14 +98,26 @@ func (GuluFile) WriteFileSaferByReader(writePath string, reader io.Reader, perm 
 		return
 	}
 
-	if err = os.Rename(f.Name(), writePath); nil != err {
-		return
+	for i := 0; i < 3; i++ {
+		err = os.Rename(f.Name(), writePath) // Windows 上重命名是非原子的
+		if nil == err {
+			os.Remove(f.Name())
+			return
+		}
+
+		if errMsg := strings.ToLower(err.Error()); strings.Contains(errMsg, "access is denied") || strings.Contains(errMsg, "used by another process") { // 文件可能是被锁定
+			time.Sleep(200 * time.Millisecond)
+			continue
+		}
+		break
 	}
 	return
 }
 
 // WriteFileSaferWithoutChangeTime writes the data to a temp file and atomically move if everything else succeeds, do not change the file modification time.
 func (GuluFile) WriteFileSaferWithoutChangeTime(writePath string, data []byte, perm os.FileMode) (err error) {
+	// credits: https://github.com/vitessio/vitess/blob/master/go/ioutil2/ioutil.go
+
 	dir, name := filepath.Split(writePath)
 	tmp := filepath.Join(dir, name+Rand.String(7)+".tmp")
 	f, err := os.OpenFile(tmp, os.O_RDWR|os.O_CREATE|os.O_EXCL, 0600)
@@ -171,14 +150,26 @@ func (GuluFile) WriteFileSaferWithoutChangeTime(writePath string, data []byte, p
 		}
 	}
 
-	if err = os.Rename(f.Name(), writePath); nil != err {
-		return
+	for i := 0; i < 3; i++ {
+		err = os.Rename(f.Name(), writePath) // Windows 上重命名是非原子的
+		if nil == err {
+			os.Remove(f.Name())
+			return
+		}
+
+		if errMsg := strings.ToLower(err.Error()); strings.Contains(errMsg, "access is denied") || strings.Contains(errMsg, "used by another process") { // 文件可能是被锁定
+			time.Sleep(200 * time.Millisecond)
+			continue
+		}
+		break
 	}
 	return
 }
 
 // WriteFileSafer writes the data to a temp file and atomically move if everything else succeeds.
 func (GuluFile) WriteFileSafer(writePath string, data []byte, perm os.FileMode) (err error) {
+	// credits: https://github.com/vitessio/vitess/blob/master/go/ioutil2/ioutil.go
+
 	dir, name := filepath.Split(writePath)
 	tmp := filepath.Join(dir, name+Rand.String(7)+".tmp")
 	f, err := os.OpenFile(tmp, os.O_RDWR|os.O_CREATE|os.O_EXCL, 0600)
@@ -202,8 +193,18 @@ func (GuluFile) WriteFileSafer(writePath string, data []byte, perm os.FileMode) 
 		return
 	}
 
-	if err = os.Rename(f.Name(), writePath); nil != err {
-		return
+	for i := 0; i < 3; i++ {
+		err = os.Rename(f.Name(), writePath) // Windows 上重命名是非原子的
+		if nil == err {
+			os.Remove(f.Name())
+			return
+		}
+
+		if errMsg := strings.ToLower(err.Error()); strings.Contains(errMsg, "access is denied") || strings.Contains(errMsg, "used by another process") { // 文件可能是被锁定
+			time.Sleep(200 * time.Millisecond)
+			continue
+		}
+		break
 	}
 	return
 }
