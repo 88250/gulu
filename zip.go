@@ -14,7 +14,6 @@ import (
 	"archive/zip"
 	"bytes"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"unicode/utf8"
@@ -57,7 +56,7 @@ func (z *ZipFile) AddEntryN(path string, names ...string) error {
 	return nil
 }
 
-// AddEntry adds a entry.
+// AddEntry adds an entry.
 func (z *ZipFile) AddEntry(path, name string) error {
 	fi, err := os.Stat(name)
 	if nil != err {
@@ -108,7 +107,7 @@ func (z *ZipFile) AddDirectoryN(path string, names ...string) error {
 
 // AddDirectory adds a directory.
 func (z *ZipFile) AddDirectory(path, dirName string) error {
-	files, err := ioutil.ReadDir(dirName)
+	files, err := os.ReadDir(dirName)
 	if nil != err {
 		return err
 	}
@@ -144,7 +143,7 @@ func cloneZipItem(f *zip.File, dest string) error {
 	fileName := f.Name
 
 	if !utf8.ValidString(fileName) {
-		data, err := ioutil.ReadAll(transform.NewReader(bytes.NewReader([]byte(fileName)), simplifiedchinese.GB18030.NewDecoder()))
+		data, err := io.ReadAll(transform.NewReader(bytes.NewReader([]byte(fileName)), simplifiedchinese.GB18030.NewDecoder()))
 		if nil == err {
 			fileName = string(data)
 		} else {
@@ -184,6 +183,10 @@ func cloneZipItem(f *zip.File, dest string) error {
 
 	_, err = io.Copy(fileCopy, rc)
 	if nil != err {
+		return err
+	}
+
+	if err = os.Chtimes(path, f.Modified, f.Modified); nil != err {
 		return err
 	}
 	return nil
