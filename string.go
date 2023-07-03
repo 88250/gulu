@@ -18,7 +18,7 @@ import (
 	"unsafe"
 )
 
-// Equal determines whether the str is equal to the strs.
+// Equal determines whether the slice1 is equal to the slice2.
 func (gs *GuluStr) Equal(slice1 []string, slice2 []string) bool {
 	if len(slice1) != len(slice2) {
 		return false
