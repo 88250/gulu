@@ -82,6 +82,12 @@ func TestRemoveInvisible(t *testing.T) {
 		t.Errorf("expected [%s], got [%s]", expected, got)
 		return
 	}
+
+	got = Str.RemoveInvisible("foo\u200e测试\nbar\tbaz")
+	if expected != got {
+		t.Errorf("expected [%s], got [%s]", expected, got)
+		return
+	}
 }
 
 func TestToBytes(t *testing.T) {
