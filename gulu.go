@@ -13,8 +13,6 @@ package gulu
 
 import (
 	"os"
-	"reflect"
-	"sync"
 )
 
 // Logger is the logger used in Gulu internally.
@@ -73,8 +71,3 @@ var (
 	// JSON utilities
 	JSON GuluJSON
 )
-
-func IsMutexLocked(m *sync.Mutex) bool {
-	state := reflect.ValueOf(m).Elem().FieldByName("state")
-	return state.Int()&1 == 1
-}
