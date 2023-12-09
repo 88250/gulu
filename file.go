@@ -114,58 +114,6 @@ func (GuluFile) WriteFileSaferByReader(writePath string, reader io.Reader, perm 
 	return
 }
 
-// WriteFileSaferWithoutChangeTime writes the data to a temp file and atomically move if everything else succeeds, do not change the file modification time.
-func (GuluFile) WriteFileSaferWithoutChangeTime(writePath string, data []byte, perm os.FileMode) (err error) {
-	// credits: https://github.com/vitessio/vitess/blob/master/go/ioutil2/ioutil.go
-
-	dir, name := filepath.Split(writePath)
-	tmp := filepath.Join(dir, name+Rand.String(7)+".tmp")
-	f, err := os.OpenFile(tmp, os.O_RDWR|os.O_CREATE|os.O_EXCL, 0600)
-	if nil != err {
-		return
-	}
-
-	if _, err = f.Write(data); nil != err {
-		return
-	}
-
-	if err = f.Sync(); nil != err {
-		return
-	}
-
-	if err = f.Close(); nil != err {
-		return
-	}
-
-	if err = os.Chmod(f.Name(), perm); nil != err {
-		return
-	}
-
-	// 保持文件修改时间不变
-	info, _ := os.Stat(writePath)
-	if nil != info {
-		t := info.ModTime()
-		if err = os.Chtimes(f.Name(), t, t); nil != err {
-			return
-		}
-	}
-
-	for i := 0; i < 3; i++ {
-		err = os.Rename(f.Name(), writePath) // Windows 上重命名是非原子的
-		if nil == err {
-			os.Remove(f.Name())
-			return
-		}
-
-		if errMsg := strings.ToLower(err.Error()); strings.Contains(errMsg, "access is denied") || strings.Contains(errMsg, "used by another process") { // 文件可能是被锁定
-			time.Sleep(200 * time.Millisecond)
-			continue
-		}
-		break
-	}
-	return
-}
-
 // WriteFileSafer writes the data to a temp file and atomically move if everything else succeeds.
 func (GuluFile) WriteFileSafer(writePath string, data []byte, perm os.FileMode) (err error) {
 	// credits: https://github.com/vitessio/vitess/blob/master/go/ioutil2/ioutil.go
