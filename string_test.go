@@ -14,6 +14,24 @@ import (
 	"testing"
 )
 
+func TestSubStringBetween(t *testing.T) {
+	expected := "bar"
+	got := Str.SubStringBetween("foobarbaz", "foo", "baz")
+	if expected != got {
+		t.Errorf("expected [%s], got [%s]", expected, got)
+		return
+	}
+}
+
+func TestLastSubStringBetween(t *testing.T) {
+	expected := "bar"
+	got := Str.LastSubStringBetween("foobarbaz", "foo", "baz")
+	if expected != got {
+		t.Errorf("expected [%s], got [%s]", expected, got)
+		return
+	}
+}
+
 func TestEqual(t *testing.T) {
 	if !Str.Equal([]string{"foo", "bar"}, []string{"foo", "bar"}) {
 		t.Error("[\"foo\", \"bar\"] and [\"foo\", \"bar\"] should be equal")

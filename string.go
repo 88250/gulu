@@ -18,6 +18,32 @@ import (
 	"unsafe"
 )
 
+// SubStringBetween gets the first substring between the start and end.
+func (gs *GuluStr) SubStringBetween(s, start, end string) string {
+	startIndex := strings.Index(s, start)
+	if -1 == startIndex {
+		return ""
+	}
+	endIndex := strings.Index(s, end)
+	if -1 == endIndex {
+		return ""
+	}
+	return s[startIndex+len(start) : endIndex]
+}
+
+// LastSubStringBetween gets the last substring between the start and end.
+func (gs *GuluStr) LastSubStringBetween(s, start, end string) string {
+	startIndex := strings.LastIndex(s, start)
+	if -1 == startIndex {
+		return ""
+	}
+	endIndex := strings.LastIndex(s, end)
+	if -1 == endIndex {
+		return ""
+	}
+	return s[startIndex+len(start) : endIndex]
+}
+
 // Equal determines whether the slice1 is equal to the slice2.
 func (gs *GuluStr) Equal(slice1 []string, slice2 []string) bool {
 	if len(slice1) != len(slice2) {
