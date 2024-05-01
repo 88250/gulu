@@ -262,7 +262,7 @@ func (*GuluFile) copyFile(source, dest string, chtimes bool) (err error) {
 	}
 	defer destfile.Close()
 
-	sourceinfo, err := os.Stat(source)
+	sourceinfo, err := os.Lstat(source)
 	if nil != err {
 		return
 	}
