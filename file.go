@@ -267,6 +267,11 @@ func (*GuluFile) copyFile(source, dest string, chtimes bool) (err error) {
 		return
 	}
 
+	if 0 == sourceinfo.Mode()&os.ModeSymlink {
+		// 忽略符号链接
+		return
+	}
+
 	if err = os.Chmod(dest, sourceinfo.Mode()); nil != err {
 		return
 	}
