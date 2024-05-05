@@ -232,7 +232,7 @@ func TestCopyWithoutHidden(t *testing.T) {
 		return
 	}
 
-	if File.IsExist("./.gitignore") {
+	if File.IsExist(dest) {
 		t.Error(".gitignore should not exist")
 		return
 	}
