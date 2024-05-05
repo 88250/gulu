@@ -224,6 +224,20 @@ func TestCopy(t *testing.T) {
 	}
 }
 
+func TestCopyWithoutHidden(t *testing.T) {
+	dest := filepath.Join(testdataDir, ".gitignore")
+	err := File.CopyWithoutHidden("./.gitignore", dest)
+	if nil != err {
+		t.Error("Copy failed: ", err)
+		return
+	}
+
+	if File.IsExist("./.gitignore") {
+		t.Error(".gitignore should not exist")
+		return
+	}
+}
+
 func TestCopyDirNewtimes(t *testing.T) {
 	source := "testcopydir"
 	os.Mkdir(source, 0644)

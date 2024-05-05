@@ -221,9 +221,21 @@ func (gl *GuluFile) Copy(source, dest string) (err error) {
 	}
 
 	if gl.IsDir(source) {
-		return gl.CopyDir(source, dest)
+		return gl.copyDir(source, dest, false, true)
 	}
-	return gl.CopyFile(source, dest)
+	return gl.copyFile(source, dest, false, true)
+}
+
+// CopyWithoutHidden copies the source to the dest without hidden files.
+func (gl *GuluFile) CopyWithoutHidden(source, dest string) (err error) {
+	if !gl.IsExist(source) {
+		return os.ErrNotExist
+	}
+
+	if gl.IsDir(source) {
+		return gl.copyDir(source, dest, true, true)
+	}
+	return gl.copyFile(source, dest, true, true)
 }
 
 // CopyNewtimes copies the source to the dest.
@@ -242,16 +254,20 @@ func (gl *GuluFile) CopyNewtimes(source, dest string) (err error) {
 // CopyFile copies the source file to the dest file.
 // Keep the dest access/mod time as the same as the source.
 func (gl *GuluFile) CopyFile(source, dest string) (err error) {
-	return gl.copyFile(source, dest, true)
+	return gl.copyFile(source, dest, false, true)
 }
 
 // CopyFileNewtimes copies the source file to the dest file.
 // Do not keep the dest access/mod time as the same as the source.
 func (gl *GuluFile) CopyFileNewtimes(source, dest string) (err error) {
-	return gl.copyFile(source, dest, false)
+	return gl.copyFile(source, dest, false, false)
 }
 
-func (*GuluFile) copyFile(source, dest string, chtimes bool) (err error) {
+func (gl *GuluFile) copyFile(source, dest string, ignoreHidden, chtimes bool) (err error) {
+	if ignoreHidden && gl.IsHidden(source) {
+		return
+	}
+
 	if err = os.MkdirAll(filepath.Dir(dest), 0755); nil != err {
 		return
 	}
@@ -298,16 +314,16 @@ func (*GuluFile) copyFile(source, dest string, chtimes bool) (err error) {
 // CopyDir copies the source directory to the dest directory.
 // Keep the dest access/mod time as the same as the source.
 func (gl *GuluFile) CopyDir(source, dest string) (err error) {
-	return gl.copyDir(source, dest, true)
+	return gl.copyDir(source, dest, false, true)
 }
 
 // CopyDirNewtimes copies the source directory to the dest directory.
 // Do not keep the dest access/mod time as the same as the source.
 func (gl *GuluFile) CopyDirNewtimes(source, dest string) (err error) {
-	return gl.copyDir(source, dest, false)
+	return gl.copyDir(source, dest, false, false)
 }
 
-func (gl *GuluFile) copyDir(source, dest string, chtimes bool) (err error) {
+func (gl *GuluFile) copyDir(source, dest string, ignoreHidden, chtimes bool) (err error) {
 	sourceinfo, err := os.Stat(source)
 	if err != nil {
 		return err
@@ -326,14 +342,18 @@ func (gl *GuluFile) copyDir(source, dest string, chtimes bool) (err error) {
 		srcFilePath := filepath.Join(source, f.Name())
 		destFilePath := filepath.Join(dest, f.Name())
 
+		if gl.IsHidden(srcFilePath) {
+			continue
+		}
+
 		if f.IsDir() {
-			err = gl.copyDir(srcFilePath, destFilePath, chtimes)
+			err = gl.copyDir(srcFilePath, destFilePath, ignoreHidden, chtimes)
 			if err != nil {
 				logger.Error(err)
 				return
 			}
 		} else {
-			err = gl.copyFile(srcFilePath, destFilePath, chtimes)
+			err = gl.copyFile(srcFilePath, destFilePath, ignoreHidden, chtimes)
 			if err != nil {
 				logger.Error(err)
 				return
