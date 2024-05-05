@@ -264,6 +264,11 @@ func (gl *GuluFile) CopyFileNewtimes(source, dest string) (err error) {
 }
 
 func (gl *GuluFile) copyFile(source, dest string, ignoreHidden, chtimes bool) (err error) {
+	sourceinfo, err := os.Lstat(source)
+	if nil != err {
+		return
+	}
+
 	if ignoreHidden && gl.IsHidden(source) {
 		return
 	}
@@ -277,11 +282,6 @@ func (gl *GuluFile) copyFile(source, dest string, ignoreHidden, chtimes bool) (e
 		return err
 	}
 	defer destfile.Close()
-
-	sourceinfo, err := os.Lstat(source)
-	if nil != err {
-		return
-	}
 
 	if 0 != sourceinfo.Mode()&os.ModeSymlink {
 		// 忽略符号链接
@@ -329,6 +329,10 @@ func (gl *GuluFile) copyDir(source, dest string, ignoreHidden, chtimes bool) (er
 		return err
 	}
 
+	if ignoreHidden && gl.IsHidden(source) {
+		return
+	}
+
 	if err = os.MkdirAll(dest, 0755); err != nil {
 		return err
 	}
@@ -341,10 +345,6 @@ func (gl *GuluFile) copyDir(source, dest string, ignoreHidden, chtimes bool) (er
 	for _, f := range dirs {
 		srcFilePath := filepath.Join(source, f.Name())
 		destFilePath := filepath.Join(dest, f.Name())
-
-		if gl.IsHidden(srcFilePath) {
-			continue
-		}
 
 		if f.IsDir() {
 			err = gl.copyDir(srcFilePath, destFilePath, ignoreHidden, chtimes)
