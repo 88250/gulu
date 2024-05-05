@@ -269,6 +269,11 @@ func (gl *GuluFile) copyFile(source, dest string, ignoreHidden, chtimes bool) (e
 		return
 	}
 
+	if 0 != sourceinfo.Mode()&os.ModeSymlink {
+		// 忽略符号链接
+		return
+	}
+
 	if ignoreHidden && gl.IsHidden(source) {
 		return
 	}
@@ -282,11 +287,6 @@ func (gl *GuluFile) copyFile(source, dest string, ignoreHidden, chtimes bool) (e
 		return err
 	}
 	defer destfile.Close()
-
-	if 0 != sourceinfo.Mode()&os.ModeSymlink {
-		// 忽略符号链接
-		return
-	}
 
 	if err = os.Chmod(dest, sourceinfo.Mode()); nil != err {
 		return
