@@ -26,7 +26,9 @@ func TestCreate(t *testing.T) {
 		return
 	}
 
-	zipFile.AddDirectory(".", testdataDir)
+	zipFile.AddDirectory(".", testdataDir, func(filename string) {
+		t.Logf("zipped %s", filename)
+	})
 	if nil != err {
 		t.Error(err)
 		return
@@ -38,7 +40,9 @@ func TestCreate(t *testing.T) {
 		return
 	}
 
-	err = Zip.Unzip(zipDirPath+".zip", zipDirPath)
+	err = Zip.Unzip(zipDirPath+".zip", zipDirPath, func(filename string) {
+		t.Logf("unzipped %s", filename)
+	})
 	if nil != err {
 		t.Error(err)
 		return

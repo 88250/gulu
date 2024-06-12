@@ -46,7 +46,7 @@ func (z *ZipFile) Close() error {
 }
 
 // AddEntry adds an entry.
-func (z *ZipFile) AddEntry(path, name string) error {
+func (z *ZipFile) AddEntry(path, name string, callback ...func(filename string)) error {
 	fi, err := os.Stat(name)
 	if nil != err {
 		return err
@@ -80,18 +80,22 @@ func (z *ZipFile) AddEntry(path, name string) error {
 	defer file.Close()
 
 	_, err = io.Copy(entry, file)
+
+	if 0 < len(callback) {
+		callback[0](name)
+	}
 	return err
 }
 
 // AddDirectory adds a directory.
-func (z *ZipFile) AddDirectory(path, dirName string) error {
+func (z *ZipFile) AddDirectory(path, dirName string, callback ...func(string)) error {
 	files, err := os.ReadDir(dirName)
 	if nil != err {
 		return err
 	}
 
 	if 0 == len(files) {
-		err = z.AddEntry(path, dirName)
+		err = z.AddEntry(path, dirName, callback...)
 		if nil != err {
 			return err
 		}
@@ -106,7 +110,7 @@ func (z *ZipFile) AddDirectory(path, dirName string) error {
 		if file.IsDir() {
 			err = z.AddDirectory(zipPath, localPath)
 		} else {
-			err = z.AddEntry(zipPath, localPath)
+			err = z.AddEntry(zipPath, localPath, callback...)
 		}
 
 		if nil != err {
@@ -117,7 +121,7 @@ func (z *ZipFile) AddDirectory(path, dirName string) error {
 }
 
 // Unzip extracts a zip file specified by the zipFilePath to the destination.
-func (*GuluZip) Unzip(zipFilePath, destination string) error {
+func (*GuluZip) Unzip(zipFilePath, destination string, callback ...func(filename string)) error {
 	r, err := zip.OpenReader(zipFilePath)
 
 	if nil != err {
@@ -125,8 +129,13 @@ func (*GuluZip) Unzip(zipFilePath, destination string) error {
 	}
 	defer r.Close()
 
+	var cb func(string)
+	if 0 < len(callback) {
+		cb = callback[0]
+	}
+
 	for _, f := range r.File {
-		err = cloneZipItem(f, destination)
+		err = cloneZipItem(f, destination, cb)
 		if nil != err {
 			return err
 		}
@@ -134,7 +143,7 @@ func (*GuluZip) Unzip(zipFilePath, destination string) error {
 	return nil
 }
 
-func cloneZipItem(f *zip.File, dest string) error {
+func cloneZipItem(f *zip.File, dest string, callback func(filename string)) error {
 	// create full directory path
 	fileName := f.Name
 
@@ -184,6 +193,10 @@ func cloneZipItem(f *zip.File, dest string) error {
 
 	if err = os.Chtimes(path, f.Modified, f.Modified); nil != err {
 		return err
+	}
+
+	if nil != callback {
+		callback(path)
 	}
 	return nil
 }
