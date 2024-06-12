@@ -28,6 +28,13 @@ func (gs *GuluStr) SubStringBetween(s, start, end string) string {
 	if -1 == endIndex {
 		return ""
 	}
+	if startIndex >= endIndex {
+		endIndex = strings.Index(s[startIndex+len(start):], end)
+		if -1 == endIndex {
+			return ""
+		}
+		endIndex += startIndex + len(start)
+	}
 	return s[startIndex+len(start) : endIndex]
 }
 
@@ -39,6 +46,9 @@ func (gs *GuluStr) LastSubStringBetween(s, start, end string) string {
 	}
 	endIndex := strings.LastIndex(s, end)
 	if -1 == endIndex {
+		return ""
+	}
+	if startIndex >= endIndex {
 		return ""
 	}
 	return s[startIndex+len(start) : endIndex]

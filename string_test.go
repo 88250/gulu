@@ -21,6 +21,13 @@ func TestSubStringBetween(t *testing.T) {
 		t.Errorf("expected [%s], got [%s]", expected, got)
 		return
 	}
+
+	expected = "ar"
+	got = Str.SubStringBetween("foobarbaz", "b", "b")
+	if expected != got {
+		t.Errorf("expected [%s], got [%s]", expected, got)
+		return
+	}
 }
 
 func TestLastSubStringBetween(t *testing.T) {
