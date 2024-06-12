@@ -108,7 +108,7 @@ func (z *ZipFile) AddDirectory(path, dirName string, callback ...func(string)) e
 
 		err = nil
 		if file.IsDir() {
-			err = z.AddDirectory(zipPath, localPath)
+			err = z.AddDirectory(zipPath, localPath, callback...)
 		} else {
 			err = z.AddEntry(zipPath, localPath, callback...)
 		}
