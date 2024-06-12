@@ -45,17 +45,6 @@ func (z *ZipFile) Close() error {
 	return z.zipFile.Close() // close the underlying writer
 }
 
-// AddEntryN adds entries.
-func (z *ZipFile) AddEntryN(path string, names ...string) error {
-	for _, name := range names {
-		zipPath := filepath.Join(path, name)
-		if err := z.AddEntry(zipPath, name); nil != err {
-			return err
-		}
-	}
-	return nil
-}
-
 // AddEntry adds an entry.
 func (z *ZipFile) AddEntry(path, name string) error {
 	fi, err := os.Stat(name)
@@ -94,17 +83,6 @@ func (z *ZipFile) AddEntry(path, name string) error {
 	return err
 }
 
-// AddDirectoryN adds directories.
-func (z *ZipFile) AddDirectoryN(path string, names ...string) error {
-	for _, name := range names {
-		err := z.AddDirectory(path, name)
-		if nil != err {
-			return err
-		}
-	}
-	return nil
-}
-
 // AddDirectory adds a directory.
 func (z *ZipFile) AddDirectory(path, dirName string) error {
 	files, err := os.ReadDir(dirName)
@@ -131,6 +109,24 @@ func (z *ZipFile) AddDirectory(path, dirName string) error {
 			err = z.AddEntry(zipPath, localPath)
 		}
 
+		if nil != err {
+			return err
+		}
+	}
+	return nil
+}
+
+// Unzip extracts a zip file specified by the zipFilePath to the destination.
+func (*GuluZip) Unzip(zipFilePath, destination string) error {
+	r, err := zip.OpenReader(zipFilePath)
+
+	if nil != err {
+		return err
+	}
+	defer r.Close()
+
+	for _, f := range r.File {
+		err = cloneZipItem(f, destination)
 		if nil != err {
 			return err
 		}
@@ -188,24 +184,6 @@ func cloneZipItem(f *zip.File, dest string) error {
 
 	if err = os.Chtimes(path, f.Modified, f.Modified); nil != err {
 		return err
-	}
-	return nil
-}
-
-// Unzip extracts a zip file specified by the zipFilePath to the destination.
-func (*GuluZip) Unzip(zipFilePath, destination string) error {
-	r, err := zip.OpenReader(zipFilePath)
-
-	if nil != err {
-		return err
-	}
-	defer r.Close()
-
-	for _, f := range r.File {
-		err = cloneZipItem(f, destination)
-		if nil != err {
-			return err
-		}
 	}
 	return nil
 }

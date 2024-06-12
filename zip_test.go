@@ -26,7 +26,7 @@ func TestCreate(t *testing.T) {
 		return
 	}
 
-	zipFile.AddDirectoryN(".", testdataDir)
+	zipFile.AddDirectory(".", testdataDir)
 	if nil != err {
 		t.Error(err)
 		return
@@ -92,7 +92,7 @@ func _TestEmptyDir(t *testing.T) {
 		return
 	}
 
-	zipFile.AddDirectoryN("dir", zipDirPath+"/dir")
+	zipFile.AddDirectory("dir", zipDirPath+"/dir")
 	if nil != err {
 		t.Error(err)
 		return
