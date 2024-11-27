@@ -119,6 +119,15 @@ func (*GuluStr) RemoveCtl(str string) string {
 	}, str)
 }
 
+func (*GuluStr) RemovePUA(str string) string {
+	return strings.Map(func(r rune) rune {
+		if (r >= 0xE000 && r <= 0xF8FF) || (r >= 0xF0000 && r <= 0xFFFFD) || (r >= 0x100000 && r <= 0x10FFFD) {
+			return -1
+		}
+		return r
+	}, str)
+}
+
 const (
 	// ZWSP represents zero-width space.
 	ZWSP = '\u200B'

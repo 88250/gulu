@@ -115,6 +115,30 @@ func TestRemoveInvisible(t *testing.T) {
 	}
 }
 
+func TestRemoveCtl(t *testing.T) {
+	expected := "foo测试barbaz"
+	got := Str.RemoveCtl("foo\u200b测试\uE004\nbar\tbaz")
+	if expected != got {
+		t.Errorf("expected [%s], got [%s]", expected, got)
+		return
+	}
+
+	got = Str.RemoveCtl("foo\u200e测试\nbar\tbaz")
+	if expected != got {
+		t.Errorf("expected [%s], got [%s]", expected, got)
+		return
+	}
+}
+
+func TestRemovePUA(t *testing.T) {
+	expected := "foo测​试barbaz"
+	got := Str.RemovePUA("foo\uE004测​试\uE004barbaz")
+	if expected != got {
+		t.Errorf("expected [%s], got [%s]", expected, got)
+		return
+	}
+}
+
 func TestToBytes(t *testing.T) {
 	str := "Gulu 你好！"
 	bytes := Str.ToBytes(str)
