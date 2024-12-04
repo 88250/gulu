@@ -115,6 +115,15 @@ func TestRemoveInvisible(t *testing.T) {
 	}
 }
 
+func TestRemoveZeroWidthCharacters(t *testing.T) {
+	expected := "foobarbaz"
+	got := Str.RemoveZeroWidthCharacters("foo\u200bbar​baz\u200C")
+	if expected != got {
+		t.Errorf("expected [%s], got [%s]", expected, got)
+		return
+	}
+}
+
 func TestRemoveCtl(t *testing.T) {
 	expected := "foo测试barbaz"
 	got := Str.RemoveCtl("foo\u200b测试\uE004\nbar\tbaz")
