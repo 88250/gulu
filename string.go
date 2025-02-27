@@ -112,7 +112,7 @@ func (gs *GuluStr) RemoveInvisible(str string) string {
 // RemoveCtl removes all control characters from string str.
 func (*GuluStr) RemoveCtl(str string) string {
 	return strings.Map(func(r rune) rune {
-		if unicode.IsPrint(r) {
+		if unicode.IsPrint(r) || '　' == r /* 全角空格 */ {
 			return r
 		}
 		return -1

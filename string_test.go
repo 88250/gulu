@@ -137,6 +137,18 @@ func TestRemoveCtl(t *testing.T) {
 		t.Errorf("expected [%s], got [%s]", expected, got)
 		return
 	}
+
+	got = Str.RemoveCtl("1 2") // 空格
+	if "1 2" != got {
+		t.Errorf("expected [1 2], got [%s]", got)
+		return
+	}
+
+	got = Str.RemoveCtl("1　2") // 全角空格
+	if "1　2" != got {
+		t.Errorf("expected [1　2], got [%s]", got)
+		return
+	}
 }
 
 func TestRemovePUA(t *testing.T) {
