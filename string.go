@@ -14,7 +14,6 @@ import (
 	"bytes"
 	"strings"
 	"unicode"
-	"unicode/utf8"
 	"unsafe"
 )
 
@@ -93,6 +92,7 @@ func (gs *GuluStr) ExcludeElem(slice, excludes []string) (ret []string) {
 
 // RemoveElem removes the specified element from the slice.
 func (gs *GuluStr) RemoveElem(slice []string, elem string) (ret []string) {
+	ret = make([]string, 0, len(slice))
 	for _, e := range slice {
 		if e != elem {
 			ret = append(ret, e)
@@ -194,6 +194,7 @@ func (*GuluStr) IsASCII(s string) bool {
 // SubstringsBetween returns a slice of sub strings between the start and end.
 func (*GuluStr) SubstringsBetween(str, start, end string) (ret []string) {
 	parts := strings.Split(str, start)
+	ret = make([]string, 0, len(parts))
 	for _, p := range parts {
 		if !strings.Contains(p, end) {
 			continue
@@ -276,7 +277,7 @@ func (*GuluStr) ReplacesIgnoreCase(text string, searchStrRepl ...string) string 
 	return buf.String()
 }
 
-// Enclose encloses search strings with open and close, case-insensitively.
+// EncloseIgnoreCase encloses search strings with open and close, case-insensitively.
 func (*GuluStr) EncloseIgnoreCase(text, open, close string, searchStrs ...string) string {
 	buf := &bytes.Buffer{}
 	textLower := strings.ToLower(text)
@@ -333,15 +334,23 @@ func (*GuluStr) LCS(s1 string, s2 string) string {
 
 // SubStr decode str into runes and get substring with the specified length.
 func (*GuluStr) SubStr(str string, length int) (ret string) {
+	if length <= 0 || str == "" {
+		return ""
+	}
 	var count int
-	for i := 0; i < len(str); {
-		r, size := utf8.DecodeRuneInString(str[i:])
-		i += size
-		ret += string(r)
+	var builder strings.Builder
+	// 预估容量，减少内存重新分配
+	capacity := length * 4 // 每个 rune 最多 4 字节
+	if capacity > len(str) {
+		capacity = len(str) // 但不大于原字符串长度
+	}
+	builder.Grow(capacity)
+	for _, r := range str {
+		builder.WriteRune(r)
 		count++
-		if length <= count {
+		if count >= length {
 			break
 		}
 	}
-	return
+	return builder.String()
 }
