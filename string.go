@@ -337,6 +337,7 @@ func (*GuluStr) SubStr(str string, length int) (ret string) {
 	if length <= 0 || str == "" {
 		return ""
 	}
+
 	var count int
 	var builder strings.Builder
 	// 预估容量，减少内存重新分配

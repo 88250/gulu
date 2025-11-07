@@ -30,7 +30,7 @@ func (*GuluPanic) Recover(err *error) {
 	if e := recover(); nil != e {
 		stack := stack()
 		msg := fmt.Sprintf("PANIC RECOVERED: %v\n\t%s\n", e, stack)
-		logger.Errorf(msg)
+		logger.Errorf("%s", msg)
 		if nil != err {
 			*err = errors.New(msg)
 		}
