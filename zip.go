@@ -13,9 +13,11 @@ package gulu
 import (
 	"archive/zip"
 	"bytes"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"unicode/utf8"
 
 	"golang.org/x/text/encoding/simplifiedchinese"
@@ -144,7 +146,6 @@ func (*GuluZip) Unzip(zipFilePath, destination string, callback ...func(filename
 }
 
 func cloneZipItem(f *zip.File, dest string, callback func(filename string)) error {
-	// create full directory path
 	fileName := f.Name
 
 	if !utf8.ValidString(fileName) {
@@ -156,15 +157,20 @@ func cloneZipItem(f *zip.File, dest string, callback func(filename string)) erro
 		}
 	}
 
-	path := filepath.Join(dest, fileName)
+	destPath := filepath.Join(dest, fileName)
+	cleanDest := filepath.Clean(dest)
+	rel, err := filepath.Rel(cleanDest, destPath)
+	if err != nil || strings.HasPrefix(rel, "..") || filepath.IsAbs(rel) {
+		return fmt.Errorf("invalid file path [%s]", destPath)
+	}
 
-	err := os.MkdirAll(filepath.Dir(path), 0755)
+	err = os.MkdirAll(filepath.Dir(destPath), 0755)
 	if nil != err {
 		return err
 	}
 
 	if f.FileInfo().IsDir() {
-		if err = os.MkdirAll(path, 0755); nil != err {
+		if err = os.MkdirAll(destPath, 0755); nil != err {
 			return err
 		}
 		return nil
@@ -180,7 +186,7 @@ func cloneZipItem(f *zip.File, dest string, callback func(filename string)) erro
 	defer rc.Close()
 
 	// use os.Create() since Zip don't store file permissions
-	fileCopy, err := os.Create(path)
+	fileCopy, err := os.Create(destPath)
 	if nil != err {
 		return err
 	}
@@ -191,12 +197,12 @@ func cloneZipItem(f *zip.File, dest string, callback func(filename string)) erro
 		return err
 	}
 
-	if err = os.Chtimes(path, f.Modified, f.Modified); nil != err {
+	if err = os.Chtimes(destPath, f.Modified, f.Modified); nil != err {
 		return err
 	}
 
 	if nil != callback {
-		callback(path)
+		callback(destPath)
 	}
 	return nil
 }
