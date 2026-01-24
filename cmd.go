@@ -12,7 +12,13 @@
 
 package gulu
 
-import "os/exec"
+import (
+	"os/exec"
+)
 
 func CmdAttr(cmd *exec.Cmd) {
+}
+
+func DecodeCmdOutput(output []byte) string {
+	return string(output)
 }
