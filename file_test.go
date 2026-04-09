@@ -11,6 +11,7 @@
 package gulu
 
 import (
+	errors "errors"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -18,6 +19,14 @@ import (
 	"testing"
 	"time"
 )
+
+func TestIsSubPath(t *testing.T) {
+	subPath := filepath.Join(testdataDir, "subPath")
+	if !File.IsSubPath(testdataDir, subPath) {
+		t.Errorf("[%s] should be a sub path of [%s]", subPath, testdataDir)
+		return
+	}
+}
 
 func TestRemoveEmptyDirs(t *testing.T) {
 	testPath := "testdata/dir"
@@ -220,6 +229,13 @@ func TestCopy(t *testing.T) {
 	destStat, _ := os.Stat(dest)
 	if sourceStat.ModTime() != destStat.ModTime() {
 		t.Error("mod time is not equal")
+		return
+	}
+
+	dest = filepath.Join(testdataDir, "subPath")
+	err = File.Copy(testdataDir, dest)
+	if !errors.Is(err, ErrCopyToSub) {
+		t.Error("Copy should fail")
 		return
 	}
 }

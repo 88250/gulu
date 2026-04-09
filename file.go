@@ -11,6 +11,7 @@
 package gulu
 
 import (
+	"errors"
 	"io"
 	"os"
 	"path/filepath"
@@ -18,8 +19,37 @@ import (
 	"time"
 )
 
+// IsSubPath checks whether the toCheckPath is a sub path of absPath. Both paths should be absolute paths.
+func (*GuluFile) IsSubPath(absPath, toCheckPath string) bool {
+	if 1 > len(absPath) || 1 > len(toCheckPath) {
+		return false
+	}
+	if absPath == toCheckPath { // 相同路径时不认为是子路径
+		return false
+	}
+
+	if OS.IsWindows() {
+		if filepath.IsAbs(absPath) && filepath.IsAbs(toCheckPath) {
+			if strings.ToLower(absPath)[0] != strings.ToLower(toCheckPath)[0] {
+				// 不在一个盘
+				return false
+			}
+		}
+	}
+
+	up := ".." + string(os.PathSeparator)
+	rel, err := filepath.Rel(absPath, toCheckPath)
+	if err != nil {
+		return false
+	}
+	if !strings.HasPrefix(rel, up) && rel != ".." {
+		return true
+	}
+	return false
+}
+
 // RemoveEmptyDirs removes all empty dirs under the specified dir path.
-func (GuluFile) RemoveEmptyDirs(dir string, excludes ...string) (err error) {
+func (*GuluFile) RemoveEmptyDirs(dir string, excludes ...string) (err error) {
 	_, err = removeEmptyDirs(dir, excludes...)
 	return
 }
@@ -63,7 +93,7 @@ func removeEmptyDirs(dir string, excludes ...string) (removed bool, err error) {
 	return false, nil
 }
 
-func (GuluFile) IsValidFilename(name string) bool {
+func (*GuluFile) IsValidFilename(name string) bool {
 	reserved := []string{"\\", "/", ":", "*", "?", "\"", "'", "<", ">", "|"}
 	for _, r := range reserved {
 		if strings.Contains(name, r) {
@@ -74,7 +104,7 @@ func (GuluFile) IsValidFilename(name string) bool {
 }
 
 // WriteFileSaferByReader writes the data to a temp file and atomically move if everything else succeeds.
-func (GuluFile) WriteFileSaferByReader(writePath string, reader io.Reader, perm os.FileMode) (err error) {
+func (*GuluFile) WriteFileSaferByReader(writePath string, reader io.Reader, perm os.FileMode) (err error) {
 	dir, name := filepath.Split(writePath)
 	tmp := filepath.Join(dir, name+Rand.String(7)+".tmp")
 	f, err := os.OpenFile(tmp, os.O_RDWR|os.O_CREATE|os.O_EXCL, 0600)
@@ -115,7 +145,7 @@ func (GuluFile) WriteFileSaferByReader(writePath string, reader io.Reader, perm 
 }
 
 // WriteFileSafer writes the data to a temp file and atomically move if everything else succeeds.
-func (GuluFile) WriteFileSafer(writePath string, data []byte, perm os.FileMode) (err error) {
+func (*GuluFile) WriteFileSafer(writePath string, data []byte, perm os.FileMode) (err error) {
 	// credits: https://github.com/vitessio/vitess/blob/master/go/ioutil2/ioutil.go
 
 	dir, name := filepath.Split(writePath)
@@ -213,6 +243,10 @@ func (*GuluFile) IsDir(path string) bool {
 	return fio.IsDir()
 }
 
+var (
+	ErrCopyToSub = errors.New("cannot copy to a sub path of the source")
+)
+
 // Copy copies the source to the dest.
 // Keep the dest access/mod time as the same as the source.
 func (gl *GuluFile) Copy(source, dest string) (err error) {
@@ -221,6 +255,9 @@ func (gl *GuluFile) Copy(source, dest string) (err error) {
 	}
 
 	if gl.IsDir(source) {
+		if gl.IsSubPath(source, dest) {
+			return ErrCopyToSub
+		}
 		return gl.copyDir(source, dest, false, true)
 	}
 	return gl.copyFile(source, dest, false, true)
@@ -233,6 +270,9 @@ func (gl *GuluFile) CopyWithoutHidden(source, dest string) (err error) {
 	}
 
 	if gl.IsDir(source) {
+		if gl.IsSubPath(source, dest) {
+			return ErrCopyToSub
+		}
 		return gl.copyDir(source, dest, true, true)
 	}
 	return gl.copyFile(source, dest, true, true)
@@ -314,12 +354,18 @@ func (gl *GuluFile) copyFile(source, dest string, ignoreHidden, chtimes bool) (e
 // CopyDir copies the source directory to the dest directory.
 // Keep the dest access/mod time as the same as the source.
 func (gl *GuluFile) CopyDir(source, dest string) (err error) {
+	if gl.IsSubPath(source, dest) {
+		return ErrCopyToSub
+	}
 	return gl.copyDir(source, dest, false, true)
 }
 
 // CopyDirNewtimes copies the source directory to the dest directory.
 // Do not keep the dest access/mod time as the same as the source.
 func (gl *GuluFile) CopyDirNewtimes(source, dest string) (err error) {
+	if gl.IsSubPath(source, dest) {
+		return ErrCopyToSub
+	}
 	return gl.copyDir(source, dest, false, false)
 }
 
