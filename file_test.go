@@ -294,6 +294,106 @@ func TestCopyFileNewtimes(t *testing.T) {
 	}
 }
 
+func TestGrep(t *testing.T) {
+	grepDir := filepath.Join(testdataDir, "grepdir")
+	defer os.RemoveAll(grepDir)
+
+	if err := os.MkdirAll(grepDir, 0755); nil != err {
+		t.Fatalf("mkdir failed: %s", err)
+	}
+
+	os.WriteFile(filepath.Join(grepDir, "a.go"), []byte("package main\nfunc foo() {}\nfunc bar() {}\n"), 0644)
+	os.WriteFile(filepath.Join(grepDir, "b.ts"), []byte("const x = 1;\nconst y = () => {};\n"), 0644)
+	os.WriteFile(filepath.Join(grepDir, "c.txt"), []byte("hello world\nfoo bar\nHELLO AGAIN\n"), 0644)
+
+	// case 1: grep all files in dir
+	results, err := File.Grep(grepDir, "", "func", 100)
+	if nil != err {
+		t.Fatalf("grep failed: %s", err)
+	}
+	if 2 != len(results) {
+		t.Errorf("expected 2 func matches, got %d", len(results))
+	}
+
+	// case 2: grep with .go include
+	results, err = File.Grep(grepDir, "*.go", "func", 100)
+	if nil != err {
+		t.Fatalf("grep failed: %s", err)
+	}
+	if 2 != len(results) {
+		t.Errorf("expected 2 func matches in .go, got %d", len(results))
+	}
+
+	// case 3: grep with brace expansion include
+	results, err = File.Grep(grepDir, "*.{go,ts}", "const", 100)
+	if nil != err {
+		t.Fatalf("grep failed: %s", err)
+	}
+	if 2 != len(results) { // b.ts has 2 "const" lines
+		t.Errorf("expected 2 const matches, got %d", len(results))
+	}
+
+	// case 4: grep single file
+	results, err = File.Grep(filepath.Join(grepDir, "c.txt"), "", "hello", 100)
+	if nil != err {
+		t.Fatalf("grep single file failed: %s", err)
+	}
+	if 1 != len(results) {
+		t.Errorf("expected 1 hello match, got %d", len(results))
+	}
+
+	// case 4b: case-insensitive grep
+	results, err = File.Grep(filepath.Join(grepDir, "c.txt"), "", "(?i)hello", 100)
+	if nil != err {
+		t.Fatalf("grep ci single file failed: %s", err)
+	}
+	if 2 != len(results) {
+		t.Errorf("expected 2 (?i)hello matches, got %d: %+v", len(results), results)
+	}
+
+	// case 5: max results limit
+	results, err = File.Grep(grepDir, "", "func|const|hello|foo|bar|HELLO", 2)
+	if nil != err {
+		t.Fatalf("grep with limit failed: %s", err)
+	}
+	if 2 != len(results) {
+		t.Errorf("expected 2 max results, got %d", len(results))
+	}
+
+	// case 6: no match
+	results, err = File.Grep(grepDir, "", "nonexistent12345", 100)
+	if nil != err {
+		t.Fatalf("grep no match failed: %s", err)
+	}
+	if 0 != len(results) {
+		t.Errorf("expected 0 matches, got %d", len(results))
+	}
+
+	// case 7: regex pattern
+	results, err = File.Grep(grepDir, "*.go", `func \w+`, 100)
+	if nil != err {
+		t.Fatalf("grep regex failed: %s", err)
+	}
+	if 2 != len(results) {
+		t.Errorf("expected 2 regex matches, got %d", len(results))
+	}
+}
+
+func TestExpandBrace(t *testing.T) {
+	patterns := expandBrace("*.{go,ts}")
+	if 2 != len(patterns) {
+		t.Errorf("expected 2 patterns, got %d: %v", len(patterns), patterns)
+	}
+	if "*.go" != patterns[0] || "*.ts" != patterns[1] {
+		t.Errorf("unexpected patterns: %v", patterns)
+	}
+
+	patterns = expandBrace("*.{go,ts,tsx}")
+	if 3 != len(patterns) {
+		t.Errorf("expected 3 patterns, got %d: %v", len(patterns), patterns)
+	}
+}
+
 func TestCopyNewtimes(t *testing.T) {
 	source := "./file.go"
 	dest := filepath.Join(testdataDir, "file.go")

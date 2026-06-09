@@ -11,10 +11,12 @@
 package gulu
 
 import (
+	"bufio"
 	"errors"
 	"io"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -413,4 +415,147 @@ func (gl *GuluFile) copyDir(source, dest string, ignoreHidden, chtimes bool) (er
 		}
 	}
 	return nil
+}
+
+// GrepResult represents a single match of a Grep search.
+type GrepResult struct {
+	File string // file path where the match was found
+	Line int    // 1-based line number
+	Text string // the full line content that matched
+}
+
+// Grep searches files matching regexPattern, optionally filtered by includeGlob.
+// root can be a file or directory path. includeGlob is a file glob pattern like
+// "*.go" or "*.{ts,tsx}". regexPattern is the regular expression to match.
+// maxResults limits the number of returned results (0 or negative defaults to 64).
+// Hidden directories and binary files are skipped.
+func (*GuluFile) Grep(root string, includeGlob string, regexPattern string, maxResults int) ([]*GrepResult, error) {
+	re, err := regexp.Compile(regexPattern)
+	if err != nil {
+		return nil, err
+	}
+
+	if maxResults <= 0 {
+		maxResults = 64
+	}
+
+	var results []*GrepResult
+	info, err := os.Stat(root)
+	if err != nil {
+		return nil, err
+	}
+
+	if info.IsDir() {
+		err = filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
+			if err != nil {
+				return nil
+			}
+
+			if d.IsDir() {
+				if skipDir(d.Name()) {
+					return filepath.SkipDir
+				}
+				return nil
+			}
+
+			if !d.Type().IsRegular() {
+				return nil
+			}
+
+			if includeGlob != "" && !matchInclude(d.Name(), includeGlob) {
+				return nil
+			}
+
+			grepFile(path, re, &results, maxResults)
+			if len(results) > maxResults {
+				results = results[:maxResults]
+			}
+
+			return nil
+		})
+	} else {
+		grepFile(root, re, &results, maxResults)
+	}
+
+	if err != nil {
+		return results, err
+	}
+
+	if len(results) > maxResults {
+		results = results[:maxResults]
+	}
+
+	return results, nil
+}
+
+// skipDir returns true if the directory should be skipped during traversal.
+func skipDir(name string) bool {
+	return name == ".git" || name == ".svn" || name == ".hg" || strings.HasPrefix(name, ".")
+}
+
+// matchInclude checks whether filename matches the include glob pattern.
+// Supports brace expansion like "*.{go,ts}".
+func matchInclude(filename, includeGlob string) bool {
+	patterns := expandBrace(includeGlob)
+	for _, p := range patterns {
+		if matched, _ := filepath.Match(p, filename); matched {
+			return true
+		}
+	}
+	return false
+}
+
+// expandBrace expands brace patterns like "*.{go,ts}" into ["*.go", "*.ts"].
+func expandBrace(pattern string) []string {
+	i := strings.Index(pattern, "{")
+	if i < 0 {
+		return []string{pattern}
+	}
+
+	j := strings.Index(pattern[i:], "}")
+	if j < 0 {
+		return []string{pattern}
+	}
+	j += i
+
+	prefix := pattern[:i]
+	body := pattern[i+1 : j]
+	suffix := pattern[j+1:]
+
+	var result []string
+	for _, opt := range strings.Split(body, ",") {
+		result = append(result, expandBrace(prefix+strings.TrimSpace(opt)+suffix)...)
+	}
+	return result
+}
+
+// grepFile reads a single file line by line and appends matching lines to results.
+func grepFile(path string, re *regexp.Regexp, results *[]*GrepResult, maxResults int) {
+	if len(*results) >= maxResults {
+		return
+	}
+
+	f, err := os.Open(path)
+	if err != nil {
+		return
+	}
+	defer f.Close()
+
+	scanner := bufio.NewScanner(f)
+	scanner.Buffer(make([]byte, 1024*1024), 1024*1024)
+	lineNum := 0
+	for scanner.Scan() {
+		if len(*results) >= maxResults {
+			return
+		}
+		lineNum++
+		line := scanner.Text()
+		if re.MatchString(line) {
+			*results = append(*results, &GrepResult{
+				File: path,
+				Line: lineNum,
+				Text: line,
+			})
+		}
+	}
 }
