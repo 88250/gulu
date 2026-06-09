@@ -419,17 +419,19 @@ func (gl *GuluFile) copyDir(source, dest string, ignoreHidden, chtimes bool) (er
 
 // GrepResult represents a single match of a Grep search.
 type GrepResult struct {
-	File string // file path where the match was found
-	Line int    // 1-based line number
-	Text string // the full line content that matched
+	File    string // file path where the match was found
+	Line    int    // 1-based line number
+	Text    string // the full line content
+	Context bool   // true if this is a context line (neither match nor actual result)
 }
 
 // Grep searches files matching regexPattern, optionally filtered by includeGlob.
 // root can be a file or directory path. includeGlob is a file glob pattern like
 // "*.go" or "*.{ts,tsx}". regexPattern is the regular expression to match.
-// maxResults limits the number of returned results (0 or negative defaults to 64).
-// Hidden directories and binary files are skipped.
-func (*GuluFile) Grep(root string, includeGlob string, regexPattern string, maxResults int) ([]*GrepResult, error) {
+// context specifies how many lines of context before and after each match to include
+// (0 means only matching lines). maxResults limits the number of returned results
+// (0 or negative defaults to 64). Hidden directories and binary files are skipped.
+func (*GuluFile) Grep(root string, includeGlob string, regexPattern string, context int, maxResults int) ([]*GrepResult, error) {
 	re, err := regexp.Compile(regexPattern)
 	if err != nil {
 		return nil, err
@@ -466,7 +468,7 @@ func (*GuluFile) Grep(root string, includeGlob string, regexPattern string, maxR
 				return nil
 			}
 
-			grepFile(path, re, &results, maxResults)
+			grepFile(path, re, context, &results, maxResults)
 			if len(results) > maxResults {
 				results = results[:maxResults]
 			}
@@ -474,7 +476,7 @@ func (*GuluFile) Grep(root string, includeGlob string, regexPattern string, maxR
 			return nil
 		})
 	} else {
-		grepFile(root, re, &results, maxResults)
+		grepFile(root, re, context, &results, maxResults)
 	}
 
 	if err != nil {
@@ -530,7 +532,8 @@ func expandBrace(pattern string) []string {
 }
 
 // grepFile reads a single file line by line and appends matching lines to results.
-func grepFile(path string, re *regexp.Regexp, results *[]*GrepResult, maxResults int) {
+// context specifies how many lines before and after each match to include as context.
+func grepFile(path string, re *regexp.Regexp, context int, results *[]*GrepResult, maxResults int) {
 	if len(*results) >= maxResults {
 		return
 	}
@@ -541,6 +544,41 @@ func grepFile(path string, re *regexp.Regexp, results *[]*GrepResult, maxResults
 	}
 	defer f.Close()
 
+	type bufEntry struct {
+		lineNum int
+		text    string
+	}
+
+	beforeBuf := make([]bufEntry, 0, context+1)
+	afterRemaining := 0
+
+	flushBeforeBuf := func() {
+		for _, e := range beforeBuf {
+			if len(*results) >= maxResults {
+				return
+			}
+			*results = append(*results, &GrepResult{
+				File:    path,
+				Line:    e.lineNum,
+				Text:    e.text,
+				Context: true,
+			})
+		}
+		beforeBuf = beforeBuf[:0]
+	}
+
+	emit := func(lineNum int, text string, isContext bool) {
+		if len(*results) >= maxResults {
+			return
+		}
+		*results = append(*results, &GrepResult{
+			File:    path,
+			Line:    lineNum,
+			Text:    text,
+			Context: isContext,
+		})
+	}
+
 	scanner := bufio.NewScanner(f)
 	scanner.Buffer(make([]byte, 1024*1024), 1024*1024)
 	lineNum := 0
@@ -550,12 +588,20 @@ func grepFile(path string, re *regexp.Regexp, results *[]*GrepResult, maxResults
 		}
 		lineNum++
 		line := scanner.Text()
+
 		if re.MatchString(line) {
-			*results = append(*results, &GrepResult{
-				File: path,
-				Line: lineNum,
-				Text: line,
-			})
+			flushBeforeBuf()
+			emit(lineNum, line, false)
+			afterRemaining = context
+		} else if afterRemaining > 0 {
+			emit(lineNum, line, true)
+			afterRemaining--
+		} else {
+			beforeBuf = append(beforeBuf, bufEntry{lineNum, line})
+			if len(beforeBuf) > context {
+				copy(beforeBuf, beforeBuf[1:])
+				beforeBuf = beforeBuf[:len(beforeBuf)-1]
+			}
 		}
 	}
 }

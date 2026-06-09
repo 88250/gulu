@@ -307,7 +307,7 @@ func TestGrep(t *testing.T) {
 	os.WriteFile(filepath.Join(grepDir, "c.txt"), []byte("hello world\nfoo bar\nHELLO AGAIN\n"), 0644)
 
 	// case 1: grep all files in dir
-	results, err := File.Grep(grepDir, "", "func", 100)
+	results, err := File.Grep(grepDir, "", "func", 0, 100)
 	if nil != err {
 		t.Fatalf("grep failed: %s", err)
 	}
@@ -316,7 +316,7 @@ func TestGrep(t *testing.T) {
 	}
 
 	// case 2: grep with .go include
-	results, err = File.Grep(grepDir, "*.go", "func", 100)
+	results, err = File.Grep(grepDir, "*.go", "func", 0, 100)
 	if nil != err {
 		t.Fatalf("grep failed: %s", err)
 	}
@@ -325,7 +325,7 @@ func TestGrep(t *testing.T) {
 	}
 
 	// case 3: grep with brace expansion include
-	results, err = File.Grep(grepDir, "*.{go,ts}", "const", 100)
+	results, err = File.Grep(grepDir, "*.{go,ts}", "const", 0, 100)
 	if nil != err {
 		t.Fatalf("grep failed: %s", err)
 	}
@@ -334,7 +334,7 @@ func TestGrep(t *testing.T) {
 	}
 
 	// case 4: grep single file
-	results, err = File.Grep(filepath.Join(grepDir, "c.txt"), "", "hello", 100)
+	results, err = File.Grep(filepath.Join(grepDir, "c.txt"), "", "hello", 0, 100)
 	if nil != err {
 		t.Fatalf("grep single file failed: %s", err)
 	}
@@ -343,7 +343,7 @@ func TestGrep(t *testing.T) {
 	}
 
 	// case 4b: case-insensitive grep
-	results, err = File.Grep(filepath.Join(grepDir, "c.txt"), "", "(?i)hello", 100)
+	results, err = File.Grep(filepath.Join(grepDir, "c.txt"), "", "(?i)hello", 0, 100)
 	if nil != err {
 		t.Fatalf("grep ci single file failed: %s", err)
 	}
@@ -352,7 +352,7 @@ func TestGrep(t *testing.T) {
 	}
 
 	// case 5: max results limit
-	results, err = File.Grep(grepDir, "", "func|const|hello|foo|bar|HELLO", 2)
+	results, err = File.Grep(grepDir, "", "func|const|hello|foo|bar|HELLO", 0, 2)
 	if nil != err {
 		t.Fatalf("grep with limit failed: %s", err)
 	}
@@ -361,7 +361,7 @@ func TestGrep(t *testing.T) {
 	}
 
 	// case 6: no match
-	results, err = File.Grep(grepDir, "", "nonexistent12345", 100)
+	results, err = File.Grep(grepDir, "", "nonexistent12345", 0, 100)
 	if nil != err {
 		t.Fatalf("grep no match failed: %s", err)
 	}
@@ -370,12 +370,55 @@ func TestGrep(t *testing.T) {
 	}
 
 	// case 7: regex pattern
-	results, err = File.Grep(grepDir, "*.go", `func \w+`, 100)
+	results, err = File.Grep(grepDir, "*.go", `func \w+`, 0, 100)
 	if nil != err {
 		t.Fatalf("grep regex failed: %s", err)
 	}
 	if 2 != len(results) {
 		t.Errorf("expected 2 regex matches, got %d", len(results))
+	}
+}
+
+func TestGrepContext(t *testing.T) {
+	ctxDir := filepath.Join(testdataDir, "grepctxdir")
+	defer os.RemoveAll(ctxDir)
+
+	if err := os.MkdirAll(ctxDir, 0755); nil != err {
+		t.Fatalf("mkdir failed: %s", err)
+	}
+
+	os.WriteFile(filepath.Join(ctxDir, "d.txt"), []byte("line 1 a\nline 2 b\nline 3 MATCH\nline 4 d\nline 5 e\nline 6 f\nline 7 MATCH\nline 8 h\nline 9 i\nline 10 j\n"), 0644)
+
+	// case 1: context=2, verify before/after context lines present
+	results, err := File.Grep(ctxDir, "", "MATCH", 2, 100)
+	if nil != err {
+		t.Fatalf("grep context failed: %s", err)
+	}
+	// lines 1,2 (before match 3), 3:: (match), 4,5 (after match 3),
+	// 6 (before match 7), 7:: (match), 8,9 (after match 7)
+	// line 5 is after-context of match 3, consumed before match 7's before-buf
+	if 9 != len(results) {
+		t.Errorf("expected 7 results with context, got %d: %+v", len(results), results)
+	}
+	if results[2].Context {
+		t.Errorf("line 3 (MATCH) should not be marked as context")
+	}
+	if !results[0].Context {
+		t.Errorf("line 1 should be marked as context")
+	}
+
+	// case 2: context=0 returns only matches
+	results, err = File.Grep(ctxDir, "", "MATCH", 0, 100)
+	if nil != err {
+		t.Fatalf("grep no-context failed: %s", err)
+	}
+	if 2 != len(results) {
+		t.Errorf("expected 2 matches without context, got %d", len(results))
+	}
+	for _, r := range results {
+		if r.Context {
+			t.Errorf("no result should be marked as context when context=0")
+		}
 	}
 }
 
