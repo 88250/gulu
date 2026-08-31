@@ -14,6 +14,7 @@ import (
 	errors "errors"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"testing"
@@ -213,6 +214,133 @@ func TestCopyFile(t *testing.T) {
 	if sourceStat.ModTime() != destStat.ModTime() {
 		t.Error("mod time is not equal")
 		return
+	}
+}
+
+func TestCopyPreservesReadOnlyMode(t *testing.T) {
+	testDir := t.TempDir()
+	source := filepath.Join(testDir, "source")
+	dest := filepath.Join(testDir, "dest")
+	writeCopyTestFile(t, source, "source", 0444)
+	t.Cleanup(func() {
+		_ = os.Chmod(dest, 0600)
+	})
+
+	if err := File.Copy(source, dest); nil != err {
+		t.Fatalf("copy failed: %s", err)
+	}
+	info, err := os.Stat(dest)
+	if nil != err {
+		t.Fatalf("stat copied file failed: %s", err)
+	}
+	if 0 != info.Mode().Perm()&0200 {
+		t.Fatalf("copied file mode [%o] is writable", info.Mode().Perm())
+	}
+	if runtime.GOOS != "windows" && 0444 != info.Mode().Perm() {
+		t.Fatalf("copied file mode is [%o], expected [444]", info.Mode().Perm())
+	}
+}
+
+func TestCopyWritable(t *testing.T) {
+	t.Run("NewReadOnlyFile", func(t *testing.T) {
+		testDir := t.TempDir()
+		source := filepath.Join(testDir, "source")
+		dest := filepath.Join(testDir, "dest")
+		writeCopyTestFile(t, source, "source", 0444)
+
+		if err := File.CopyWritable(source, dest); nil != err {
+			t.Fatalf("copy writable failed: %s", err)
+		}
+		assertCopyWritableTestFile(t, dest, "source", 0444)
+	})
+
+	t.Run("ExistingReadOnlyFile", func(t *testing.T) {
+		testDir := t.TempDir()
+		source := filepath.Join(testDir, "source")
+		dest := filepath.Join(testDir, "dest")
+		writeCopyTestFile(t, source, "source", 0444)
+		writeCopyTestFile(t, dest, "dest", 0444)
+
+		if err := File.CopyWritable(source, dest); nil != err {
+			t.Fatalf("overwrite read-only file failed: %s", err)
+		}
+		assertCopyWritableTestFile(t, dest, "source", 0444)
+	})
+
+	t.Run("NestedDirectory", func(t *testing.T) {
+		testDir := t.TempDir()
+		source := filepath.Join(testDir, "source")
+		dest := filepath.Join(testDir, "dest")
+		sourceFile := filepath.Join(source, "nested", "source")
+		if err := os.MkdirAll(filepath.Dir(sourceFile), 0755); nil != err {
+			t.Fatalf("create source directory failed: %s", err)
+		}
+		writeCopyTestFile(t, sourceFile, "source", 0444)
+
+		if err := File.CopyWritable(source, dest); nil != err {
+			t.Fatalf("copy writable directory failed: %s", err)
+		}
+		assertCopyWritableTestFile(t, filepath.Join(dest, "nested", "source"), "source", 0444)
+	})
+
+	for _, test := range []struct {
+		name string
+		mode os.FileMode
+	}{
+		{name: "OwnerReadOnly", mode: 0400},
+		{name: "Executable", mode: 0555},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			testDir := t.TempDir()
+			source := filepath.Join(testDir, "source")
+			dest := filepath.Join(testDir, "dest")
+			writeCopyTestFile(t, source, "source", test.mode)
+
+			if err := File.CopyWritable(source, dest); nil != err {
+				t.Fatalf("copy writable failed: %s", err)
+			}
+			assertCopyWritableTestFile(t, dest, "source", test.mode)
+		})
+	}
+}
+
+func writeCopyTestFile(t *testing.T, path, content string, mode os.FileMode) {
+	t.Helper()
+	if err := os.WriteFile(path, []byte(content), 0600); nil != err {
+		t.Fatalf("write test file failed: %s", err)
+	}
+	if err := os.Chmod(path, mode); nil != err {
+		t.Fatalf("set test file mode failed: %s", err)
+	}
+	t.Cleanup(func() {
+		_ = os.Chmod(path, 0600)
+	})
+}
+
+func assertCopyWritableTestFile(t *testing.T, path, content string, sourceMode os.FileMode) {
+	t.Helper()
+	data, err := os.ReadFile(path)
+	if nil != err {
+		t.Fatalf("read copied file failed: %s", err)
+	}
+	if content != string(data) {
+		t.Fatalf("copied content is [%s], expected [%s]", data, content)
+	}
+
+	info, err := os.Stat(path)
+	if nil != err {
+		t.Fatalf("stat copied file failed: %s", err)
+	}
+	if runtime.GOOS == "windows" {
+		if 0 == info.Mode().Perm()&0200 {
+			t.Fatalf("copied file mode [%o] is not writable", info.Mode().Perm())
+		}
+		return
+	}
+
+	expectedMode := sourceMode.Perm() | 0200
+	if expectedMode != info.Mode().Perm() {
+		t.Fatalf("copied file mode is [%o], expected [%o]", info.Mode().Perm(), expectedMode)
 	}
 }
 

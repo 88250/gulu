@@ -265,6 +265,22 @@ func (gl *GuluFile) Copy(source, dest string) (err error) {
 	return gl.copyFile(source, dest, false, true)
 }
 
+// CopyWritable copies the source to the dest and makes copied files writable by the owner.
+// Keep the dest access/mod time as the same as the source.
+func (gl *GuluFile) CopyWritable(source, dest string) (err error) {
+	if !gl.IsExist(source) {
+		return os.ErrNotExist
+	}
+
+	if gl.IsDir(source) {
+		if gl.IsSubPath(source, dest) {
+			return ErrCopyToSub
+		}
+		return gl.copyDirWithOptions(source, dest, false, true, true)
+	}
+	return gl.copyFileWithOptions(source, dest, false, true, true)
+}
+
 // CopyWithoutHidden copies the source to the dest without hidden files.
 func (gl *GuluFile) CopyWithoutHidden(source, dest string) (err error) {
 	if !gl.IsExist(source) {
@@ -306,6 +322,10 @@ func (gl *GuluFile) CopyFileNewtimes(source, dest string) (err error) {
 }
 
 func (gl *GuluFile) copyFile(source, dest string, ignoreHidden, chtimes bool) (err error) {
+	return gl.copyFileWithOptions(source, dest, ignoreHidden, chtimes, false)
+}
+
+func (gl *GuluFile) copyFileWithOptions(source, dest string, ignoreHidden, chtimes, writable bool) (err error) {
 	sourceinfo, err := os.Lstat(source)
 	if nil != err {
 		return
@@ -320,25 +340,29 @@ func (gl *GuluFile) copyFile(source, dest string, ignoreHidden, chtimes bool) (e
 		return
 	}
 
-	if err = os.MkdirAll(filepath.Dir(dest), 0755); nil != err {
-		return
-	}
-
-	destfile, err := os.Create(dest)
-	if err != nil {
-		return err
-	}
-	defer destfile.Close()
-
-	if err = os.Chmod(dest, sourceinfo.Mode()); nil != err {
-		return
-	}
-
 	sourcefile, err := os.Open(source)
 	if err != nil {
 		return err
 	}
 	defer sourcefile.Close()
+
+	if err = os.MkdirAll(filepath.Dir(dest), 0755); nil != err {
+		return
+	}
+
+	destfile, err := createCopyDestFile(dest, writable)
+	if err != nil {
+		return err
+	}
+	defer destfile.Close()
+
+	destMode := sourceinfo.Mode()
+	if writable {
+		destMode = sourceinfo.Mode().Perm() | 0200
+	}
+	if err = os.Chmod(dest, destMode); nil != err {
+		return
+	}
 
 	_, err = io.Copy(destfile, sourcefile)
 	if nil != err {
@@ -351,6 +375,22 @@ func (gl *GuluFile) copyFile(source, dest string, ignoreHidden, chtimes bool) (e
 		}
 	}
 	return
+}
+
+func createCopyDestFile(dest string, writable bool) (destfile *os.File, err error) {
+	destfile, err = os.Create(dest)
+	if nil == err || !writable || !errors.Is(err, os.ErrPermission) {
+		return
+	}
+
+	destinfo, statErr := os.Lstat(dest)
+	if nil != statErr || !destinfo.Mode().IsRegular() || 0 != destinfo.Mode().Perm()&0200 {
+		return nil, err
+	}
+	if chmodErr := os.Chmod(dest, destinfo.Mode()|0200); nil != chmodErr {
+		return nil, chmodErr
+	}
+	return os.Create(dest)
 }
 
 // CopyDir copies the source directory to the dest directory.
@@ -372,6 +412,10 @@ func (gl *GuluFile) CopyDirNewtimes(source, dest string) (err error) {
 }
 
 func (gl *GuluFile) copyDir(source, dest string, ignoreHidden, chtimes bool) (err error) {
+	return gl.copyDirWithOptions(source, dest, ignoreHidden, chtimes, false)
+}
+
+func (gl *GuluFile) copyDirWithOptions(source, dest string, ignoreHidden, chtimes, writable bool) (err error) {
 	sourceinfo, err := os.Stat(source)
 	if err != nil {
 		return err
@@ -395,13 +439,13 @@ func (gl *GuluFile) copyDir(source, dest string, ignoreHidden, chtimes bool) (er
 		destFilePath := filepath.Join(dest, f.Name())
 
 		if f.IsDir() {
-			err = gl.copyDir(srcFilePath, destFilePath, ignoreHidden, chtimes)
+			err = gl.copyDirWithOptions(srcFilePath, destFilePath, ignoreHidden, chtimes, writable)
 			if err != nil {
 				logger.Error(err)
 				return
 			}
 		} else {
-			err = gl.copyFile(srcFilePath, destFilePath, ignoreHidden, chtimes)
+			err = gl.copyFileWithOptions(srcFilePath, destFilePath, ignoreHidden, chtimes, writable)
 			if err != nil {
 				logger.Error(err)
 				return
