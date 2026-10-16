@@ -210,11 +210,9 @@ func (*GuluStr) FromBytes(bytes []byte) string {
 	return *(*string)(unsafe.Pointer(&bytes))
 }
 
-// ToBytes converts the specified str to a byte array.
+// ToBytes 返回字符串的只读字节切片，保留底层数据的指针供逃逸分析和 GC 跟踪。
 func (*GuluStr) ToBytes(str string) []byte {
-	x := (*[2]uintptr)(unsafe.Pointer(&str))
-	h := [3]uintptr{x[0], x[1], x[1]}
-	return *(*[]byte)(unsafe.Pointer(&h))
+	return unsafe.Slice(unsafe.StringData(str), len(str))
 }
 
 // Contains determines whether the str is in the strs.
