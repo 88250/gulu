@@ -114,6 +114,7 @@ func (*GuluFile) WriteFileSaferByReader(writePath string, reader io.Reader, perm
 		return
 	}
 
+	defer f.Close() // Also close on copy/sync errors; preserve the temp file for recovery.
 	if _, err = io.Copy(f, reader); nil != err {
 		return
 	}
@@ -157,6 +158,7 @@ func (*GuluFile) WriteFileSafer(writePath string, data []byte, perm os.FileMode)
 		return
 	}
 
+	defer f.Close() // Also close on write/sync errors; preserve the temp file for recovery.
 	if _, err = f.Write(data); nil != err {
 		return
 	}

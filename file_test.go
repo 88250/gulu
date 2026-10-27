@@ -12,14 +12,50 @@ package gulu
 
 import (
 	errors "errors"
+	"io"
 	"os"
 	"path/filepath"
 	"runtime"
+	"runtime/debug"
 	"strconv"
 	"strings"
 	"testing"
 	"time"
 )
+
+type failedSaferReader struct{ err error }
+
+func (reader failedSaferReader) Read([]byte) (int, error) { return 0, reader.err }
+
+func TestWriteFileSaferReaderErrorClosesTemporaryFile(t *testing.T) {
+	previousGC := debug.SetGCPercent(-1)
+	defer debug.SetGCPercent(previousGC)
+	dir := t.TempDir()
+	path := filepath.Join(dir, "target")
+	if err := os.WriteFile(path, []byte("original"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	want := errors.New("reader failed")
+	reader := io.MultiReader(strings.NewReader("partial recovery data"), failedSaferReader{want})
+	if err := File.WriteFileSaferByReader(path, reader, 0600); !errors.Is(err, want) {
+		t.Fatalf("lost reader error: %v", err)
+	}
+	files, err := filepath.Glob(path + "*.tmp")
+	if err != nil || len(files) != 1 {
+		t.Fatalf("failed write must retain recovery file: %v, %v", files, err)
+	}
+	// Windows refuses the rename if the writer still holds the file open. GC is
+	// disabled so a finalizer cannot hide an unclosed handle.
+	if err := os.Rename(files[0], files[0]+".kept"); err != nil {
+		t.Fatalf("temporary file handle remained open after return: %v", err)
+	}
+	if data, err := os.ReadFile(files[0] + ".kept"); err != nil || string(data) != "partial recovery data" {
+		t.Fatalf("recovery bytes were not preserved: %q, %v", data, err)
+	}
+	if data, err := os.ReadFile(path); err != nil || string(data) != "original" {
+		t.Fatalf("failed write changed original: %q, %v", data, err)
+	}
+}
 
 func TestIsSubPath(t *testing.T) {
 	subPath := filepath.Join(testdataDir, "subPath")
